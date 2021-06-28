@@ -14,6 +14,20 @@ export default StyleSheet.create({
     containerScrollView: {
         padding: 15
     },
+    titleBar: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 44
+    },
+    titleText: {
+        fontSize: 16,
+        color: 'white'
+    },
+    headerContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 210
+    },
     label: {
         lineHeight: 40,
         height: 40,
@@ -55,7 +69,9 @@ export default StyleSheet.create({
     button: {
         textAlign: 'center',
         color: 'white',
-        fontWeight: '700'
+        fontWeight: '700',
+        borderRadius: 6,
+        paddingHorizontal: 20
     },
     button_white: {
         textAlign: 'center',
@@ -120,63 +136,6 @@ export default StyleSheet.create({
     },
     validatingText: {
         color: '#aaa'
-    },
-    oauthButton: {
-        width: 50,
-        height: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 4,
-        borderRadius: 2
-    },
-    facebookButton: {
-        backgroundColor: '#3b5998'
-    },
-    githubButton: {
-        backgroundColor: '#4c4c4c'
-    },
-    gitlabButton: {
-        backgroundColor: '#373d47'
-    },
-    googleButton: {
-        backgroundColor: '#dd4b39'
-    },
-    linkedinButton: {
-        backgroundColor: '#1b86bc'
-    },
-    meteorButton: {
-        backgroundColor: '#de4f4f'
-    },
-    twitterButton: {
-        backgroundColor: '#02acec'
-    },
-    closeOAuth: {
-        position: 'absolute',
-        left: 5,
-        top: isIOS ? 20 : 0,
-        backgroundColor: 'transparent'
-    },
-    oAuthModal: {
-        margin: 0
-    },
-    tabletScreenContent: {
-        justifyContent: 'center',
-        alignSelf: 'center',
-        width: MAX_SCREEN_CONTENT_WIDTH
-    },
-    modalFormSheet: {
-        // Following UIModalPresentationFormSheet size
-        // this not change on different iPad sizes
-        width: 540,
-        height: 620,
-        overflow: 'hidden',
-        borderRadius: 10
-    },
-    status: {
-        position: 'absolute',
-        bottom: -3,
-        right: -3,
-        borderWidth: 3
     },
     textAlignCenter: {
         textAlign: 'center'

@@ -1,27 +1,16 @@
-import { Appearance } from 'react-native-appearance';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import setRootViewColor from 'rn-root-view';
 
 import { isAndroid } from './deviceInfo';
 import { themes } from '../constants/colors';
 
-let themeListener;
-
 export const defaultTheme = () => {
-	const systemTheme = Appearance.getColorScheme();
-	if (systemTheme && systemTheme !== 'no-preference') {
-		return systemTheme;
-	}
-	return 'light';
+	return 'orange';
 };
 
 export const getTheme = (themePreferences) => {
-	const { darkLevel, currentTheme } = themePreferences;
-	let theme = currentTheme;
-	if (currentTheme === 'automatic') {
-		theme = defaultTheme();
-	}
-	return theme === 'dark' ? darkLevel : 'light';
+	const { currentTheme } = themePreferences;
+	return currentTheme??defaultTheme();
 };
 
 export const newThemeState = (prevState, newTheme) => {
@@ -38,9 +27,8 @@ export const newThemeState = (prevState, newTheme) => {
 export const setNativeTheme = async(themePreferences) => {
 	const theme = getTheme(themePreferences);
 	if (isAndroid) {
-		const iconsLight = theme === 'light';
 		try {
-			await changeNavigationBarColor(themes[theme].navbarBackground, iconsLight);
+			await changeNavigationBarColor(themes[theme].navbarBackground, true);
 		} catch (error) {
 			// Do nothing
 		}
@@ -48,22 +36,6 @@ export const setNativeTheme = async(themePreferences) => {
 	setRootViewColor(themes[theme].backgroundColor);
 };
 
-export const unsubscribeTheme = () => {
-	if (themeListener && themeListener.remove) {
-		themeListener.remove();
-		themeListener = null;
-	}
-};
-
 export const subscribeTheme = (themePreferences, setTheme) => {
-	const { currentTheme } = themePreferences;
-	if (!themeListener && currentTheme === 'automatic') {
-		// not use listener params because we use getTheme
-		themeListener = Appearance.addChangeListener(() => setTheme());
-	} else if (currentTheme !== 'automatic') {
-		// unsubscribe appearance changes when automatic was disabled
-		unsubscribeTheme();
-	}
-	// set native components theme
 	setNativeTheme(themePreferences);
 };

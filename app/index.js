@@ -1,25 +1,24 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
-import { Provider } from 'react-redux';
-import { AppearanceProvider } from 'react-native-appearance';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import {Dimensions} from 'react-native';
+import {Provider} from 'react-redux';
+import {AppearanceProvider} from 'react-native-appearance';
+import {SafeAreaProvider, initialWindowMetrics} from 'react-native-safe-area-context';
 
 import {
     defaultTheme,
     newThemeState,
-    subscribeTheme,
-    unsubscribeTheme
+    subscribeTheme
 } from './utils/theme';
 import store from './lib/createStore';
-import { ThemeContext } from './theme';
-import { DimensionsContext } from './dimensions';
+import {ThemeContext} from './theme';
+import {DimensionsContext} from './dimensions';
 
-import { ActionSheetProvider } from './containers/ActionSheet';
+import {ActionSheetProvider} from './containers/ActionSheet';
 import AppContainer from './AppContainer';
 import InAppNotification from './containers/InAppNotification';
 import Toast from './containers/Toast';
-import {supportSystemTheme} from './utils/deviceInfo';
 import {appInit} from './actions/app';
+import debounce from "./utils/debounce";
 
 export default class Root extends React.Component {
     constructor(props) {
@@ -33,8 +32,7 @@ export default class Root extends React.Component {
         this.state = {
             theme: defaultTheme(),
             themePreferences: {
-                currentTheme: supportSystemTheme() ? 'automatic' : 'light',
-                darkLevel: 'dark'
+                currentTheme: 'orange'
             },
             width,
             height,
@@ -43,14 +41,34 @@ export default class Root extends React.Component {
         };
     }
 
-    init = async() => {
+    componentDidMount() {
+        Dimensions.addEventListener('change', this.onDimensionsChange);
+    }
+
+    componentWillUnmount() {
+        Dimensions.removeEventListener('change', this.onDimensionsChange);
+
+    }
+
+    init = async () => {
         store.dispatch(appInit());
     }
+
+    onDimensionsChange = debounce(({
+                                       window: {
+                                           width, height, scale, fontScale
+                                       }
+                                   }) => {
+        this.setDimensions({
+            width, height, scale, fontScale
+        });
+        this.setMasterDetail(width);
+    })
 
     setTheme = (newTheme = {}) => {
         // change theme state
         this.setState(prevState => newThemeState(prevState, newTheme), () => {
-            const { themePreferences } = this.state;
+            const {themePreferences} = this.state;
             // subscribe to Appearance changes
             subscribeTheme(themePreferences, this.setTheme);
         });
@@ -64,7 +82,7 @@ export default class Root extends React.Component {
         });
     }
 
-    render(){
+    render() {
         const {
             themePreferences, theme, width, height, scale, fontScale
         } = this.state;

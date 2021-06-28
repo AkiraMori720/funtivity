@@ -16,16 +16,14 @@ export const defaultHeader = {
 
 export const outsideHeader = {
 	headerStyle: {
-		backgroundColor: HEADER_BACKGROUND
+		backgroundColor: HEADER_BACKGROUND,
 	},
 	headerTitleStyle: {
 		color: HEADER_TITLE
 	},
 	headerBackTitle: null,
 	headerTintColor: HEADER_BACK,
-	headerTitle: () => <Image style={sharedStyles.navigationHeaderImage} source={{ uri: 'logo_oblong' }} />,
-	headerLayoutPreset: 'center',
-	headerRight: () => <View />
+	headerLayoutPreset: 'center'
 };
 
 export const cardStyle = {
@@ -33,18 +31,18 @@ export const cardStyle = {
 };
 
 export const borderBottom = theme => ({
-	borderBottomWidth: StyleSheet.hairlineWidth,
-	borderBottomColor: themes[theme].headerBorder,
-	elevation: 0
+	borderBottomWidth: 0,
+	elevation: 0,
+	shadowOpacity: 0
 });
 
 export const themedHeader = theme => ({
 	headerStyle: {
 		...borderBottom(theme),
-		backgroundColor: themes[theme].headerBackground
+		backgroundColor: themes[theme].headerBackground,
 	},
 	headerTintColor: themes[theme].headerTintColor,
-	headerTitleStyle: { color: themes[theme].headerTitleColor }
+	headerTitleStyle: { color: themes[theme].headerTitleColor, alignSelf: 'center' }
 });
 
 export const navigationTheme = (theme) => {

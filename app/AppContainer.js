@@ -6,13 +6,15 @@ import {connect} from 'react-redux';
 
 import Navigation from './lib/Navigation';
 import {getActiveRouteName, navigationTheme} from './utils/navigation';
-import {ROOT_LOADING, ROOT_OUTSIDE} from './actions/app';
+import {ROOT_INSIDE, ROOT_LOADING, ROOT_ONBOARD, ROOT_OUTSIDE} from './actions/app';
 
 // Stacks
 import AuthLoadingView from './views/AuthLoadingView';
 
 import OutsideStack from './stacks/OutsideStack';
 import {ThemeContext} from './theme';
+import OnBoardingView from "./views/OnBoardingView";
+import InsideStack from "./stacks/InsideStack";
 
 
 // App
@@ -41,6 +43,12 @@ const App = React.memo(({ root, isMasterDetail }) => {
         >
             <Stack.Navigator screenOptions={{ headerShown: false, animationEnabled: false }}>
                 <>
+                    {root === ROOT_ONBOARD ? (
+                        <Stack.Screen
+                            name='OnBoard'
+                            component={OnBoardingView}
+                        />
+                    ) : null}
                     {root === ROOT_LOADING ? (
                         <Stack.Screen
                             name='AuthLoading'
@@ -48,9 +56,16 @@ const App = React.memo(({ root, isMasterDetail }) => {
                         />
                     ) : null}
                     {root === ROOT_OUTSIDE  ? (
+
                         <Stack.Screen
                             name='OutsideStack'
                             component={OutsideStack}
+                        />
+                    ) : null}
+                    {root === ROOT_INSIDE  ? (
+                        <Stack.Screen
+                            name='OutsideStack'
+                            component={InsideStack}
                         />
                     ) : null}
                 </>

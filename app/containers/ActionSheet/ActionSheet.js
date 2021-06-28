@@ -14,7 +14,7 @@ import { TapGestureHandler, State } from 'react-native-gesture-handler';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import Animated, {
 	Extrapolate,
-	interpolate,
+	interpolateNode,
 	Value,
 	Easing
 } from 'react-native-reanimated';
@@ -83,6 +83,7 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 	const toggleVisible = () => setVisible(!isVisible);
 
 	const hide = () => {
+		console.log('action hide');
 		bottomSheetRef.current?.snapTo(closedSnapIndex);
 	};
 
@@ -135,7 +136,7 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 			theme={theme}
 		>
 			<Text style={[styles.text, { color: themes[theme].bodyText }]}>
-				{I18n.t('Cancel')}
+				Cancel
 			</Text>
 		</Button>
 	) : null));
@@ -143,7 +144,7 @@ const ActionSheet = React.memo(forwardRef(({ children, theme }, ref) => {
 	const renderItem = useCallback(({ item }) => <Item item={item} hide={hide} theme={theme} />);
 
 	const animatedPosition = React.useRef(new Value(0));
-	const opacity = interpolate(animatedPosition.current, {
+	const opacity = interpolateNode(animatedPosition.current, {
 		inputRange: [0, 1],
 		outputRange: [0, 0.7],
 		extrapolate: Extrapolate.CLAMP
