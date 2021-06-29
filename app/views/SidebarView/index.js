@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import {Image, ImageBackground, ScrollView, Text, View} from "react-native";
+import {Image, ImageBackground, ScrollView, Text} from "react-native";
+import {connect} from "react-redux";
 
-import {COLOR_ORANGE, themes} from "../../constants/colors";
-import sharedStyles from "../Styles";
+import {themes} from "../../constants/colors";
 import StatusBar from "../../containers/StatusBar";
 import SafeAreaView from "../../containers/SafeAreaView";
 import {withTheme} from "../../theme";
 import styles from "./styles";
 import images from "../../assets/images";
 import SidebarItem from "./SidebarItem";
-import {VectorIcon} from "../../containers/VectorIcon";
 import scrollPersistTaps from "../../utils/scrollPersistTaps";
+import {logout as logoutAction} from "../../actions/login";
 
 
 class SidebarView extends React.Component{
@@ -20,6 +20,8 @@ class SidebarView extends React.Component{
     })
 
     static propTypes = {
+        logout: PropTypes.func,
+        user: PropTypes.object,
         theme: PropTypes.string,
     }
 
@@ -83,17 +85,18 @@ class SidebarView extends React.Component{
     };
 
     onLogOut = () => {
-
+        const {logout} = this.props;
+        logout();
     }
 
     render(){
-        const {theme} = this.props;
+        const {user, theme} = this.props;
         return (
             <SafeAreaView style={{ backgroundColor: themes[theme].backgroundColor }}>
                 <StatusBar/>
                 <ImageBackground style={styles.headerContainer} source={images.bg_sidebar}>
-                    <Image source={images.default_avatar} style={styles.avatar}/>
-                    <Text style={styles.profileName}>No Name</Text>
+                    <Image source={user.avatar?{uri: user.avatar}:images.default_avatar} style={styles.avatar}/>
+                    <Text style={styles.profileName}>{user.firstName} {user.lastName}</Text>
                 </ImageBackground>
                 <ScrollView style={{flexGrow: 1}} {...scrollPersistTaps}>
                     {
@@ -130,4 +133,12 @@ class SidebarView extends React.Component{
     }
 }
 
-export default withTheme(SidebarView);
+const mapStateToProps = state => ({
+    user: state.login.user
+})
+
+const mapDispatchToProps = dispatch => ({
+    logout: params => dispatch(logoutAction(params))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(SidebarView));

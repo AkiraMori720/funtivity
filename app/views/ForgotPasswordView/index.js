@@ -10,6 +10,9 @@ import StatusBar from "../../containers/StatusBar";
 import {Text, View} from "react-native";
 import styles from "./styles";
 import Button from "../../containers/Button";
+import {showErrorAlert, showToast} from "../../lib/info";
+import {isValidEmail} from "../../utils/validators";
+import firebaseSdk from "../../lib/firebaseSdk";
 
 
 class ForgotPasswordView extends React.Component{
@@ -27,6 +30,42 @@ class ForgotPasswordView extends React.Component{
         this.state = {
             email: '',
             isLoading: false
+        }
+    }
+
+    isValid = () => {
+        const {email} = this.state;
+        if(!email.length){
+            showToast('Please enter your email.');
+            this.emailInput.focus();
+            return false;
+        }
+        if(!isValidEmail(email)){
+            showToast('Email address is invalid.');
+            this.emailInput.focus();
+            return false;
+        }
+        return true;
+    }
+
+    onSubmit = () => {
+        if(this.isValid()){
+            const {email} = this.state;
+            this.setState({isLoading: true});
+            const {navigation} = this.props;
+
+            firebaseSdk.resetPassword(email)
+                .then(res => {
+                    this.setState({isLoading: false});
+                    showToast('We have sent a reset password link to your email.');
+                    navigation.pop();
+                })
+                .catch(err => {
+                    if(err === 'auth/user-not-found'){
+                        showErrorAlert('This user is not registered.');
+                    }
+                    this.setState({isLoading: false});
+                })
         }
     }
 
@@ -60,7 +99,7 @@ class ForgotPasswordView extends React.Component{
                         title={'Reset Password'}
                         type='primary'
                         size='W'
-                        onPress={this.submit}
+                        onPress={this.onSubmit}
                         testID='login-view-submit'
                         loading={isLoading}
                         theme={theme}

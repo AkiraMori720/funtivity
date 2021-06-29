@@ -1,7 +1,8 @@
 import { APP, APP_STATE } from '../actions/actionsTypes';
+import {ROOT_LOADING} from "../actions/app";
 
 const initialState = {
-	root: null,
+	root: ROOT_LOADING,
 	isMasterDetail: false,
 	text: null,
 	ready: false,

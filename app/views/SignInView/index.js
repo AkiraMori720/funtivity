@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Image, ScrollView, Text, View} from "react-native";
+import {Image, Platform, ScrollView, Text, View} from "react-native";
 
 
 import {withTheme} from "../../theme";
@@ -13,9 +13,15 @@ import {themes} from "../../constants/colors";
 import images from "../../assets/images";
 import Button from "../../containers/Button";
 import TextInput from "../../containers/TextInput";
-import {loginRequest as loginRequestAction} from "../../actions/login";
+import {loginSuccess as loginSuccessAction} from "../../actions/login";
 import scrollPersistTaps from "../../utils/scrollPersistTaps";
 import SafeAreaView from "../../containers/SafeAreaView";
+import {showErrorAlert, showToast} from "../../lib/info";
+import {isValidEmail} from "../../utils/validators";
+import firebaseSdk from "../../lib/firebaseSdk";
+import AsyncStorage from "@react-native-community/async-storage";
+import {CURRENT_USER} from "../../constants/keys";
+import {appStart as appStartAction, ROOT_INSIDE} from "../../actions/app";
 
 class SingInView extends React.Component {
     static navigationOptions = ({ navigation }) => ({
@@ -24,6 +30,8 @@ class SingInView extends React.Component {
 
     static propTypes = {
         navigation: PropTypes.object,
+        appStart: PropTypes.func,
+        loginSuccess: PropTypes.func,
         theme: PropTypes.string
     }
 
@@ -46,10 +54,98 @@ class SingInView extends React.Component {
         navigation.navigate('ForgotPassword');
     }
 
-    onSubmit = () => {
+    isValid = () => {
         const {email, password} = this.state;
-        const {loginRequest} = this.props;
-        loginRequest({email, password});
+        if(!email.length && !password.length){
+            showToast('Please enter your email and password.');
+            this.emailInput.focus();
+            return false;
+        }
+        if(!email.length){
+            showToast('Please enter your email.');
+            this.emailInput.focus();
+            return false;
+        }
+        if(!isValidEmail(email)){
+            showToast('Email address is invalid.');
+            this.emailInput.focus();
+            return false;
+        }
+        if(!password.length){
+            showToast('Please enter your password.');
+            this.passwordInput.focus();
+            return false;
+        }
+        return true;
+    }
+
+    onSubmit = () => {
+        if(this.isValid()){
+            const {email, password} = this.state;
+            const {loginSuccess, appStart} = this.props;
+            this.setState({isLoading: true});
+
+            firebaseSdk.signInWithEmail(email, password)
+                .then(async (user) => {
+                    await AsyncStorage.setItem(CURRENT_USER, JSON.stringify(user));
+                    this.setState({isLoading: false});
+                    loginSuccess(user);
+                })
+                .catch(err => {
+                    this.setState({isLoading: false});
+                    if(err.indexOf('auth/user-not-found')>0){
+                        showErrorAlert('This user is not registered.');
+                    } else if(err.indexOf('auth/wrong-password')>0){
+                        showErrorAlert('Then password is invalid.');
+                    } else {
+                        showErrorAlert('Then user is invalid.');
+                    }
+                    console.log('error', err);
+                })
+        }
+    }
+
+    onSignInWithOAuth = async (oauth) => {
+        switch (oauth){
+            case 'facebook':
+                await firebaseSdk.facebookSignIn()
+                    .then(async(user) => {
+                        await this.oauthLogin(user);
+                    });
+                break;
+            case 'google':
+                await firebaseSdk.googleSignIn()
+                    .then(async(user) => {
+                        console.log('user', user);
+                        await this.oauthLogin(user);
+                    })
+                break;
+            case 'apple':
+                await firebaseSdk.appleSignIn()
+                    .then(async(user) => {
+                        await this.oauthLogin(user);
+                    });
+                break;
+        }
+    }
+
+    oauthLogin = async (credential) => {
+        const {loginSuccess} = this.props;
+        if(credential && credential.user._user){
+            const oauth_user = credential.user._user;
+            const providerData = oauth_user.providerData && oauth_user.providerData.length > 0 ? oauth_user.providerData[0] : {};
+            const user_info = {id: oauth_user.uid,  ...providerData};
+            console.log('user_info', user_info);
+
+            firebaseSdk.createUser(user_info)
+                .then(async() => {
+                    await AsyncStorage.setItem(CURRENT_USER, JSON.stringify(user_info));
+                    loginSuccess(user_info);
+                })
+                .catch(err => {
+                    showErrorAlert(err, 'Error');
+                })
+        }
     }
 
     render() {
@@ -111,22 +207,22 @@ class SingInView extends React.Component {
                                 <Button
                                     title={'logo_facebook'}
                                     type='oauth'
-                                    onPress={this.onSubmit}
+                                    onPress={() => this.onSignInWithOAuth('facebook')}
                                     testID='login-view-submit'
                                     theme={theme}
                                 />
                                 <Button
                                     title={'logo_google'}
                                     type='oauth'
-                                    onPress={this.onSubmit}
+                                    onPress={() => this.onSignInWithOAuth('google')}
                                     theme={theme}
                                 />
-                                <Button
+                                {Platform.OS === 'ios' && <Button
                                     title={'logo_apple'}
                                     type='oauth'
-                                    onPress={this.onSubmit}
+                                    onPress={() => this.onSignInWithOAuth('apple')}
                                     theme={theme}
-                                />
+                                />}
                             </View>
                             <View style={styles.bottomContainer}>
                                 <Text style={{color: themes[theme].actionTintColor}}>Not registered? </Text>
@@ -144,7 +240,8 @@ class SingInView extends React.Component {
 
 
 const mapDispatchToProps = dispatch => ({
-    loginRequest: params => dispatch(loginRequestAction(params))
+    loginSuccess: params => dispatch(loginSuccessAction(params)),
+    appStart: params => dispatch(appStartAction(params)),
 });
 
 export default connect(null, mapDispatchToProps)(withTheme(SingInView));

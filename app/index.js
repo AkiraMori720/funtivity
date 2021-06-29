@@ -1,7 +1,6 @@
 import React from 'react';
 import {Dimensions} from 'react-native';
 import {Provider} from 'react-redux';
-import {AppearanceProvider} from 'react-native-appearance';
 import {SafeAreaProvider, initialWindowMetrics} from 'react-native-safe-area-context';
 
 import {
@@ -19,6 +18,8 @@ import InAppNotification from './containers/InAppNotification';
 import Toast from './containers/Toast';
 import {appInit} from './actions/app';
 import debounce from "./utils/debounce";
+import AsyncStorage from "@react-native-community/async-storage";
+import {APP_THEME} from "./constants/keys";
 
 export default class Root extends React.Component {
     constructor(props) {
@@ -31,9 +32,6 @@ export default class Root extends React.Component {
 
         this.state = {
             theme: defaultTheme(),
-            themePreferences: {
-                currentTheme: 'orange'
-            },
             width,
             height,
             scale,
@@ -51,6 +49,10 @@ export default class Root extends React.Component {
     }
 
     init = async () => {
+        const theme = await AsyncStorage.getItem(APP_THEME);
+        if(theme){
+            this.setTheme(theme);
+        }
         store.dispatch(appInit());
     }
 
@@ -67,10 +69,10 @@ export default class Root extends React.Component {
 
     setTheme = (newTheme = {}) => {
         // change theme state
-        this.setState(prevState => newThemeState(prevState, newTheme), () => {
-            const {themePreferences} = this.state;
+        this.setState({theme: newTheme}, () => {
+            const {theme} = this.state;
             // subscribe to Appearance changes
-            subscribeTheme(themePreferences, this.setTheme);
+            subscribeTheme(theme);
         });
     }
 
@@ -84,38 +86,35 @@ export default class Root extends React.Component {
 
     render() {
         const {
-            themePreferences, theme, width, height, scale, fontScale
+            theme, width, height, scale, fontScale
         } = this.state;
 
         return (
             <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-                <AppearanceProvider>
-                    <Provider store={store}>
-                        <ThemeContext.Provider
+                <Provider store={store}>
+                    <ThemeContext.Provider
+                        value={{
+                            theme,
+                            setTheme: this.setTheme
+                        }}
+                    >
+                        <DimensionsContext.Provider
                             value={{
-                                theme,
-                                themePreferences,
-                                setTheme: this.setTheme
+                                width,
+                                height,
+                                scale,
+                                fontScale,
+                                setDimensions: this.setDimensions
                             }}
                         >
-                            <DimensionsContext.Provider
-                                value={{
-                                    width,
-                                    height,
-                                    scale,
-                                    fontScale,
-                                    setDimensions: this.setDimensions
-                                }}
-                            >
-                                <ActionSheetProvider>
-                                    <AppContainer/>
-                                    <InAppNotification/>
-                                    <Toast/>
-                                </ActionSheetProvider>
-                            </DimensionsContext.Provider>
-                        </ThemeContext.Provider>
-                    </Provider>
-                </AppearanceProvider>
+                            <ActionSheetProvider>
+                                <AppContainer/>
+                                <InAppNotification/>
+                                <Toast/>
+                            </ActionSheetProvider>
+                        </DimensionsContext.Provider>
+                    </ThemeContext.Provider>
+                </Provider>
             </SafeAreaProvider>
         )
     }

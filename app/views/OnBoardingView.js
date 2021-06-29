@@ -12,6 +12,8 @@ import Button from "../containers/Button";
 import {withTheme} from "../theme";
 import PropTypes from "prop-types";
 import CheckBox from "../containers/CheckBox";
+import AsyncStorage from "@react-native-community/async-storage";
+import {DO_NOT_SHOW_SPLASH_AGAIN} from "../constants/keys";
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -75,33 +77,51 @@ class OnBoardingView extends React.Component {
 
     constructor(props) {
         super(props);
-        this.currentIndex = 0;
         this.state = {
-            notShowAgain: false
+            notShowAgain: false,
+            currentIndex: 0,
+            renderSlides: this.renderSlides()
         }
     }
 
-    onIndexChanged = (index) => {
-        this.currentIndex = index;
-        if(!this.isSkipable()){
-            this.forceUpdate();
-        }
-    }
-
-    onNext = (force = false) => {
+    onNext = async (force = false) => {
         const { appStart } = this.props;
-        if (force || this.currentIndex === 2) {
+
+        if (force) {
+            appStart({ root: ROOT_OUTSIDE });
+        } else if (!this.isSkipable()) {
+            if(this.state.notShowAgain){
+                await AsyncStorage.setItem(DO_NOT_SHOW_SPLASH_AGAIN, "true");
+            }
             appStart({ root: ROOT_OUTSIDE });
         } else {
             this.swipe.scrollBy(1);
         }
     }
 
-    isSkipable = () => this.currentIndex !== 2;
+    renderSlides = () => {
+        let sides = [];
+        sides.push(<View style={styles.slides} key={'swipe-1'}>
+            <Text style={styles.swipeText}>Welcome{"\n"}To Funtivity</Text>
+        </View>);
+        sides.push(
+            <View style={styles.slides} key={'swipe-2'}>
+                <Text style={styles.swipeText}>If you're looking to{"\n"} meet someone to do any activity like fishing, sports, yoga, etc.In your area then you have come to the right app</Text>
+            </View>
+        );
+        sides.push(
+            <View style={styles.slides} key={'swipe-3'}>
+                <Text style={styles.swipeText}>Sign up now and start meeting other people!</Text>
+            </View>
+        );
+        return sides;
+    }
+
+    isSkipable = () => this.state.currentIndex !== 2;
 
     render(){
         const { theme } = this.props;
-        const { notShowAgain } = this.state;
+        const { notShowAgain, renderSlides } = this.state;
         return (
             <ImageBackground  style={styles.mainContainer} source={images.bg_onboard}>
                 <StatusBar />
@@ -109,19 +129,12 @@ class OnBoardingView extends React.Component {
                     <Swiper
                         loop={false}
                         ref={ref => this.swipe = ref}
-                        onIndexChanged={this.onIndexChanged}
+                        onIndexChanged={(index) => this.setState({currentIndex:index})}
                         activeDotStyle={styles.activeDot}
                         dotStyle={styles.dot}
+                        paginationStyle={{ position: 'absolute', bottom: 60 }}
                         >
-                        <View style={styles.slides}>
-                            <Text style={styles.swipeText}>Welcome{"\n"}To Funtivity</Text>
-                        </View>
-                        <View style={styles.slides}>
-                            <Text style={styles.swipeText}>If you're looking to{"\n"} meet someone to do any activity like fishing, sports, yoga, etc.In your area then you have come to the right app</Text>
-                        </View>
-                        <View style={styles.slides}>
-                            <Text style={styles.swipeText}>Sign up now and start meeting other people!</Text>
-                        </View>
+                        {renderSlides}
                     </Swiper>
                 </View>
                 <View style={styles.buttonContainer}>
@@ -140,7 +153,7 @@ class OnBoardingView extends React.Component {
                     <Button
                         onPress={() => this.onNext()}
                         size='X'
-                        text={'Next'}
+                        text={this.isSkipable()?'Next':'Done'}
                         theme={theme}
                     />
                 </View>

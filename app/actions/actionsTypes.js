@@ -15,9 +15,6 @@ export const APP_STATE = createRequestTypes('APP_STATE', ['FOREGROUND', 'BACKGRO
 export const LOGIN = createRequestTypes('LOGIN', [
 	...defaultTypes,
 	'RESET',
-	'SET_SERVICES',
-	'SET_PREFERENCE',
-	'SET_LOCAL_AUTHENTICATED',
 ]);
 export const USER = createRequestTypes('USER', ['SET']);
 export const LOGOUT = 'LOGOUT';

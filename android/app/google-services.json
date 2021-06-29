@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "543423061769",
+    "firebase_url": "https://funtivity-c691e-default-rtdb.firebaseio.com",
     "project_id": "funtivity-c691e",
     "storage_bucket": "funtivity-c691e.appspot.com"
   },
@@ -37,6 +38,13 @@
             {
               "client_id": "543423061769-d9r2rv8t2bqom533um8q1k0gvhds5010.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "543423061769-gp1lcaebsk4o7qig3glj1app8vro78s1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.brainyapps.funtivity"
+              }
             }
           ]
         }

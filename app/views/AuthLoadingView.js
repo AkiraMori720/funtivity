@@ -1,16 +1,15 @@
 import React from 'react';
 import {
-	View, Text, StyleSheet, ActivityIndicator, Image
+	View, StyleSheet, ActivityIndicator, Image
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
-import I18n from '../i18n';
 import StatusBar from '../containers/StatusBar';
 import { withTheme } from '../theme';
 import { themes } from '../constants/colors';
 
 import sharedStyles from './Styles';
+import images from "../assets/images";
 
 const styles = StyleSheet.create({
 	container: {
@@ -21,7 +20,8 @@ const styles = StyleSheet.create({
 	logo: {
 		height: 200,
 		width: 200,
-		resizeMode: 'contain'
+		resizeMode: 'contain',
+		marginBottom: 40
 	},
 	text: {
 		fontSize: 16,
@@ -31,26 +31,18 @@ const styles = StyleSheet.create({
 	}
 });
 
-const AuthLoadingView = React.memo(({ theme, text }) => (
-	<View style={[styles.container, { backgroundColor: themes[theme].backgroundColor }]}>
+const AuthLoadingView = React.memo(({ theme }) => (
+	<View style={[styles.container, { backgroundColor: themes[theme].focusedBackground }]}>
 		<StatusBar />
-		{text && (
-			<>
-				<Image source={{uri: 'logo_square'}} style={styles.logo}/>
-				<ActivityIndicator color={themes[theme].auxiliaryText} size='large' />
-				<Text style={[styles.text, { color: themes[theme].bodyText }]}>{`${ text }`}</Text>
-			</>
-		)}
+		<View>
+			<Image source={images.logo} style={styles.logo}/>
+			<ActivityIndicator color={themes[theme].actionColor} size='large' />
+		</View>
 	</View>
 ));
 
-const mapStateToProps = state => ({
-	text: state.app.text
-});
-
 AuthLoadingView.propTypes = {
-	theme: PropTypes.string,
-	text: PropTypes.string
+	theme: PropTypes.string
 };
 
-export default connect(mapStateToProps)(withTheme(AuthLoadingView));
+export default withTheme(AuthLoadingView);

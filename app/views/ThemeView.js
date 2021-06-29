@@ -7,6 +7,8 @@ import StatusBar from "../containers/StatusBar";
 import {themes} from "../constants/colors";
 import {withTheme} from "../theme";
 import images from "../assets/images";
+import AsyncStorage from "@react-native-community/async-storage";
+import {APP_THEME} from "../constants/keys";
 
 
 const styles = StyleSheet.create({
@@ -42,14 +44,12 @@ class ThemeView extends React.Component {
 
     static propTypes = {
         navigation: PropTypes.object,
+        setTheme: PropTypes.string,
         theme: PropTypes.string
     }
 
     constructor(props) {
         super(props);
-        this.state = {
-            cur_theme : 'theme_a'
-        };
 
         this.themes = [
             {id: 'theme_a', image: images.theme_a},
@@ -61,16 +61,18 @@ class ThemeView extends React.Component {
         ]
     }
 
-    onSelectTheme = (theme) => {
-        this.setState({cur_theme: theme.id})
+    onSelectTheme = async (theme) => {
+        const {setTheme} = this.props;
+        setTheme(theme);
+        await AsyncStorage.setItem(APP_THEME, theme);
     }
 
-    renderTheme = (theme) => {
-        const {cur_theme} = this.state;
-        return (<TouchableOpacity key={theme.id} onPress={() => this.onSelectTheme(theme)}
+    renderTheme = (item) => {
+        const {theme} = this.props;
+        return (<TouchableOpacity key={item.id} onPress={() => this.onSelectTheme(item.id)}
                           style={styles.themeTile}>
-            <Image style={styles.themeImage} source={theme.image}/>
-            {theme.id === cur_theme?<Image style={styles.activeTheme} source={images.ic_check}/>:null}
+            <Image style={styles.themeImage} source={item.image}/>
+            {item.id === theme?<Image style={styles.activeTheme} source={images.ic_check}/>:null}
         </TouchableOpacity>);
     }
 

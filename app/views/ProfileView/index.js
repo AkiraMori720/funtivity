@@ -10,6 +10,11 @@ import images from "../../assets/images";
 import styles from "./styles";
 import {VectorIcon} from "../../containers/VectorIcon";
 import ImagePicker from "react-native-image-crop-picker";
+import {connect} from "react-redux";
+import firebaseSdk, {DB_ACTION_UPDATE} from "../../lib/firebaseSdk";
+import {showErrorAlert, showToast} from "../../lib/info";
+import {setUser as setUserAction} from "../../actions/login";
+import ActivityIndicator from "../../containers/ActivityIndicator";
 
 const imagePickerConfig = {
     cropping: true,
@@ -24,6 +29,8 @@ const imagePickerConfig = {
 
 class ProfileView extends React.Component{
     static propTypes = {
+        setUser: PropTypes.func,
+        user: PropTypes.object,
         theme: PropTypes.string,
     }
 
@@ -31,6 +38,7 @@ class ProfileView extends React.Component{
         super(props);
         this.state = {
             image_path: null,
+            isLoading: false
         }
 
         this.options = [
@@ -43,14 +51,36 @@ class ProfileView extends React.Component{
 
     takePhoto = () => {
         ImagePicker.openCamera(imagePickerConfig).then(image => {
-            this.setState({image_path: image.path});
+            this.setUserAvatar(image.path);
         });
     }
 
     chooseFromLibrary = () => {
         ImagePicker.openPicker(imagePickerConfig).then(image => {
-            this.setState({image_path: image.path});
+            this.setUserAvatar(image.path);
         });
+    }
+
+    setUserAvatar = (image_path) => {
+        const {user, setUser} = this.props;
+        this.setState({isLoading: true});
+        firebaseSdk.uploadMedia(firebaseSdk.STORAGE_TYPE_AVATAR, image_path).then(image_url => {
+            const userInfo = {id: user.id, avatar: image_url};
+            firebaseSdk.setData(firebaseSdk.TBL_USER, DB_ACTION_UPDATE, userInfo)
+                .then(() => {
+                    this.setState({isLoading: false});
+                    const updateUser = {...user, ...userInfo};
+                    setUser(updateUser);
+                    this.setState({image_path: image_path});
+                })
+                .catch(err => {
+                    showToast(err.message);
+                    this.setState({isLoading: false});
+                })
+        }).catch((err) => {
+            showErrorAlert(err, 'Error');
+            this.setState({isLoading: false});
+        })
     }
 
     onSetAvatar = () => {
@@ -104,15 +134,15 @@ class ProfileView extends React.Component{
     }
 
     render(){
-        const {theme} = this.props;
-        const {image_path} = this.state;
+        const {user, theme} = this.props;
+        const {image_path, isLoading} = this.state;
 
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: themes[theme].backgroundColor }}>
                 <StatusBar/>
                 <View style={styles.header}>
                     <View style={styles.avatarContainer}>
-                        <Image source={image_path?{uri: image_path}:images.default_avatar} style={styles.avatar}/>
+                        <Image source={image_path?{uri: image_path}:(user.avatar?{uri: user.avatar}: images.default_avatar)} style={styles.avatar}/>
                         <TouchableOpacity onPress={this.onEditProfile} style={styles.editAction}>
                             <Image source={images.edit_profile} style={styles.actionImage}/>
                         </TouchableOpacity>
@@ -123,8 +153,8 @@ class ProfileView extends React.Component{
                             <Image source={images.img_theme} style={styles.actionImage}/>
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.profileEmail}>Email</Text>
-                    <Text style={styles.profileName}>No Name</Text>
+                    <Text style={styles.profileEmail}>{user.email}</Text>
+                    <Text style={styles.profileName}>{user.firstName} {user.lastName}</Text>
                 </View>
                 <View style={styles.options}>
                     {
@@ -142,9 +172,18 @@ class ProfileView extends React.Component{
                         })
                     }
                 </View>
+                { isLoading ? <ActivityIndicator absolute size='large' theme={theme} />: null}
             </SafeAreaView>
         )
     }
 }
 
-export default withTheme(ProfileView);
+const mapStateToProps = state => ({
+    user: state.login.user
+})
+
+const mapDispatchToProps = dispatch =>({
+    setUser: params => dispatch(setUserAction(params))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(ProfileView));

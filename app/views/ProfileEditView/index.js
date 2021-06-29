@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import {Alert, Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {connect} from "react-redux";
 
 import {withTheme} from "../../theme";
 import TextInput from '../../containers/TextInput';
@@ -9,13 +10,14 @@ import {themes} from "../../constants/colors";
 import sharedStyles from "../Styles";
 import StatusBar from "../../containers/StatusBar";
 import styles from "./styles";
-import {Alert, Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import Button from "../../containers/Button";
-import {withActionSheet} from "../../containers/ActionSheet";
 import ImagePicker from "react-native-image-crop-picker";
 import images from "../../assets/images";
 import scrollPersistTaps from "../../utils/scrollPersistTaps";
 import SafeAreaView from "../../containers/SafeAreaView";
+import {showErrorAlert, showToast} from "../../lib/info";
+import firebaseSdk, {DB_ACTION_UPDATE} from "../../lib/firebaseSdk";
+import {setUser as setUserAction} from "../../actions/login";
 
 const imagePickerConfig = {
     cropping: true,
@@ -35,6 +37,8 @@ class ProfileEditView extends React.Component{
 
     static propTypes = {
         navigation: PropTypes.object,
+        user: PropTypes.object,
+        setUser: PropTypes.func,
         theme: PropTypes.string
     }
 
@@ -42,12 +46,12 @@ class ProfileEditView extends React.Component{
         super(props);
         this.state = {
             image_path: null,
-            first_name: '',
-            last_name: '',
-            interests: '',
-            location: '',
-            age: null,
-            bio: '',
+            first_name: props.user.firstName,
+            last_name: props.user.lastName,
+            interests: props.user.interests??'',
+            location: props.user.address??'',
+            age: props.user.age,
+            bio: props.user.bio??'',
             isLoading: false,
         }
     }
@@ -86,13 +90,92 @@ class ProfileEditView extends React.Component{
             ]);
     }
 
-    onGoToSignIn = () => {
-        const {navigation} = this.props;
-        navigation.pop();
+    isValid = () => {
+        const {first_name, last_name, interests, location, age, bio} = this.state;
+        if(!first_name.length){
+            showToast('Please enter your first name.');
+            this.emailInput.focus();
+            return false;
+        }
+        if(!last_name.length){
+            showToast('Please enter your last name.');
+            this.lastInput.focus();
+            return false;
+        }
+        if(!interests.length){
+            showToast('Please enter your interests.');
+            this.interestsInput.focus();
+            return false;
+        }
+        if(!location.length){
+            showToast('Please enter your location.');
+            this.locationInput.focus();
+            return false;
+        }
+        if(!age){
+            showToast('Please enter your age.');
+            this.ageInput.focus();
+            return false;
+        }
+        if(!bio.length){
+            showToast('Please enter your bio.');
+            this.bioInput.focus();
+            return false;
+        }
+        return true;
+    }
+
+    onSubmit = () => {
+        if(this.isValid()){
+            const {image_path} = this.state;
+            this.setState({isLoading: true});
+            if(image_path){
+                firebaseSdk.uploadMedia(firebaseSdk.STORAGE_TYPE_AVATAR, image_path).then(image_url => {
+                    this.saveUser(image_url);
+                }).catch((err) => {
+                    showErrorAlert(err, 'Error');
+                    this.setState({isLoading: false});
+                })
+            } else {
+                this.saveUser();
+            }
+        }
+    }
+
+    saveUser = (image_url = null) => {
+        const {user, navigation, setUser} = this.props;
+        const {first_name, last_name, interests, location, age, bio} = this.state;
+
+        let userInfo = {
+            id: user.id,
+            firstName: first_name,
+            lastName: last_name,
+            interests: interests,
+            address: location,
+            age: age,
+            bio: bio
+        }
+
+        if(image_url){
+            userInfo = {...userInfo, avatar: image_url};
+        }
+
+        firebaseSdk.setData(firebaseSdk.TBL_USER, DB_ACTION_UPDATE, userInfo)
+            .then(() => {
+                showToast('Success');
+                this.setState({isLoading: false});
+                const updateUser = {...user, ...userInfo};
+                setUser(updateUser);
+                navigation.pop();
+            })
+            .catch(err => {
+                showToast(err.message);
+                this.setState({isLoading: false});
+            })
     }
 
     render(){
-        const {theme} = this.props;
+        const {user, theme} = this.props;
         const {image_path, first_name, last_name, interests, location, age, bio, isLoading} = this.state;
         return (
             <KeyboardView
@@ -105,7 +188,7 @@ class ProfileEditView extends React.Component{
                     <SafeAreaView>
                         <View style={[sharedStyles.headerContainer, {height: 160, backgroundColor: themes[theme].headerBackground}]}>
                             <TouchableOpacity onPress={this.toggleAction}>
-                                <Image style={styles.logo} source={image_path?{uri: image_path}:images.img_upload}/>
+                                <Image style={styles.logo} source={image_path?{uri: image_path}:(user.avatar?{uri: user.avatar}:images.img_upload)}/>
                                 <Text style={[sharedStyles.link, {color: 'white', marginTop: 12, fontWeight: 'normal', textAlign: 'center'}]}>Upload Photo</Text>
                             </TouchableOpacity>
                         </View>
@@ -196,7 +279,7 @@ class ProfileEditView extends React.Component{
                                 title={'Save'}
                                 type='primary'
                                 size='W'
-                                onPress={this.submit}
+                                onPress={this.onSubmit}
                                 testID='login-view-submit'
                                 loading={isLoading}
                                 theme={theme}
@@ -209,4 +292,12 @@ class ProfileEditView extends React.Component{
     }
 }
 
-export default withTheme(ProfileEditView);
+const mapStateToProps = state => ({
+    user: state.login.user
+})
+
+const mapDispatchToProps = dispatch =>({
+    setUser: params => dispatch(setUserAction(params))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(ProfileEditView));

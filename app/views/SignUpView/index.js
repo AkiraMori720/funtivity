@@ -16,6 +16,11 @@ import ImagePicker from "react-native-image-crop-picker";
 import images from "../../assets/images";
 import scrollPersistTaps from "../../utils/scrollPersistTaps";
 import SafeAreaView from "../../containers/SafeAreaView";
+import {isValidEmail} from "../../utils/validators";
+import {showErrorAlert, showToast} from "../../lib/info";
+import firebaseSdk from "../../lib/firebaseSdk";
+import AsyncStorage from "@react-native-community/async-storage";
+import {CURRENT_USER} from "../../constants/keys";
 
 const imagePickerConfig = {
     cropping: true,
@@ -88,6 +93,94 @@ class SingUpView extends React.Component{
     onGoToSignIn = () => {
         const {navigation} = this.props;
         navigation.pop();
+    }
+
+    isValid = () => {
+        const {first_name, last_name, email, password, password_confirm} = this.state;
+
+        if(!first_name.length){
+            showToast('Please enter your first name.');
+            this.firstNameInput.focus();
+            return false;
+        }
+        if(!last_name.length){
+            showToast('Please enter your last name.');
+            this.lastInput.focus();
+            return false;
+        }
+        if(!email.length){
+            showToast('Please enter your email.');
+            this.emailInput.focus();
+            return false;
+        }
+        if(!isValidEmail(email)){
+            showToast('Email address is invalid.');
+            this.emailInput.focus();
+            return false;
+        }
+        if(!password.length){
+            showToast('Please enter your password.');
+            this.passwordInput.focus();
+            return false;
+        }
+        if(password.length < 6){
+            showToast('Password should be at least 6 characters.');
+            this.passwordInput.focus();
+            return false;
+        }
+        if(!password_confirm.length){
+            showToast('Please enter your confirm password.');
+            this.passwordConfirmInput.focus();
+            return false;
+        }
+        if(password_confirm !== password){
+            showToast('Passwords do not match. Please check and try again.');
+            return false;
+        }
+        return true;
+    }
+
+    onSubmit = () => {
+        if(this.isValid()){
+            const {image_path} = this.state;
+            this.setState({isLoading: true});
+
+            if(image_path){
+                firebaseSdk.uploadMedia(firebaseSdk.STORAGE_TYPE_AVATAR, image_path).then(image_url => {
+                    this.registerUser(image_url);
+                }).catch((err) => {
+                    showErrorAlert(err, 'Error');
+                    this.setState({isLoading: false});
+                })
+            } else {
+                this.registerUser();
+            }
+        }
+    }
+
+    registerUser = (image_url = null) => {
+        const {navigation} = this.props;
+        const {first_name, last_name, email, password} = this.state;
+
+        const user = {
+            firstName: first_name,
+            lastName: last_name,
+            email: email,
+            password: password,
+            avatar: image_url
+        }
+
+        firebaseSdk.signUp(user)
+            .then(async (user) => {
+                showToast('You have successfully registered.');
+                await AsyncStorage.setItem(CURRENT_USER, JSON.stringify(user));
+                this.setState({isLoading: false});
+                navigation.pop();
+            })
+            .catch((err) => {
+                showErrorAlert(err, 'Error');
+                this.setState({isLoading: false});
+            })
     }
 
     render(){
@@ -178,7 +271,7 @@ class SingUpView extends React.Component{
                                 title={'Create Account'}
                                 type='primary'
                                 size='W'
-                                onPress={this.submit}
+                                onPress={this.onSubmit}
                                 testID='login-view-submit'
                                 loading={isLoading}
                                 theme={theme}

@@ -43,16 +43,16 @@ const App = React.memo(({ root, isMasterDetail }) => {
         >
             <Stack.Navigator screenOptions={{ headerShown: false, animationEnabled: false }}>
                 <>
-                    {root === ROOT_ONBOARD ? (
-                        <Stack.Screen
-                            name='OnBoard'
-                            component={OnBoardingView}
-                        />
-                    ) : null}
                     {root === ROOT_LOADING ? (
                         <Stack.Screen
                             name='AuthLoading'
                             component={AuthLoadingView}
+                        />
+                    ) : null}
+                    {root === ROOT_ONBOARD ? (
+                        <Stack.Screen
+                            name='OnBoard'
+                            component={OnBoardingView}
                         />
                     ) : null}
                     {root === ROOT_OUTSIDE  ? (
