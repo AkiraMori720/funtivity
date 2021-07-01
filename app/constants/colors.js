@@ -32,7 +32,6 @@ export const COLOR_SUCCESS = '#2de0a5';
 export const COLOR_PRIMARY = '#1d74f5';
 export const COLOR_WHITE = '#fff';
 export const COLOR_TITLE = '#0C0D0F';
-export const COLOR_TEXT_DESCRIPTION = '#9ca2a8';
 export const COLOR_BORDER = '#e1e5e8';
 export const COLOR_UNREAD = '#e1e5e8';
 export const COLOR_TOAST = '#0C0D0F';
@@ -42,6 +41,7 @@ export const COLOR_ORANGE_LIGHT = '#fa8e5b';
 export const COLOR_BLUE = '#2d7fee';
 export const COLOR_BLUE_DARK = '#00387f';
 export const COLOR_GREEN = '#21b632';
+export const COLOR_GRAY = '#e3e3e3';
 export const COLOR_GRAY_LIGHT = '#fdf8f8';
 
 

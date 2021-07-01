@@ -29,6 +29,9 @@ const images = {
     ic_menu_search: require('./images/ic_menu_search.png'),
     ic_menu_settings: require('./images/ic_menu_settings.png'),
     ic_menu_logout: require('./images/ic_menu_logout.png'),
+    ic_add: require('./images/img_add.png'),
+    ic_close: require('./images/ic_decline.png')
+
 };
 
 export default images;

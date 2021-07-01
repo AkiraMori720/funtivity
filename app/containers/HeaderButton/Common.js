@@ -49,9 +49,9 @@ export const Favorite = React.memo(({ onPress, testID }) => (
 	</Container>
 ));
 
-export const Download = React.memo(({ onPress, testID, ...props }) => (
+export const Edit = React.memo(({ onPress, testID, ...props }) => (
 	<Container>
-		<Item iconName='download' onPress={onPress} testID={testID} {...props} />
+		<Item iconName='edit' vector='MaterialIcons' onPress={onPress} testID={testID} {...props} />
 	</Container>
 ));
 
@@ -87,7 +87,7 @@ Favorite.propTypes = {
 	onPress: PropTypes.func.isRequired,
 	testID: PropTypes.string.isRequired
 };
-Download.propTypes = {
+Edit.propTypes = {
 	onPress: PropTypes.func.isRequired,
 	testID: PropTypes.string.isRequired
 };

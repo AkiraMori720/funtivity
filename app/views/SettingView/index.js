@@ -53,10 +53,13 @@ class SettingView extends React.Component{
                 Linking.openURL(mail_url);
                 break;
             case 'about_app':
+                navigation.navigate('About', {type: 0});
                 break;
             case 'privacy_policy':
+                navigation.navigate('About', {type: 1});
                 break;
             case 'term_and_conditions':
+                navigation.navigate('About', {type: 2});
                 break;
         }
     }

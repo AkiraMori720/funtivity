@@ -20,6 +20,9 @@ import ThemeView from "../views/ThemeView";
 import ProfileEditView from "../views/ProfileEditView";
 import AccountView from "../views/AccountView";
 import ChatView from "../views/ChatView";
+import AboutView from "../views/AboutView";
+import AddMeetupView from "../views/AddMeetupView";
+import MyMeetupView from "../views/MyMeetupView";
 
 
 // Outside
@@ -103,6 +106,19 @@ const InsideStack = () => {
 			<Inside.Screen
 				name='Chat'
 				component={ChatView}
+			/>
+			<Inside.Screen
+				name='About'
+				component={AboutView}
+			/>
+			<Inside.Screen
+				name='MyMeetup'
+				component={MyMeetupView}
+			/>
+			<Inside.Screen
+				name='AddMeetup'
+				component={AddMeetupView}
+				options={AddMeetupView.navigationOptions}
 			/>
 		</Inside.Navigator>
 	);

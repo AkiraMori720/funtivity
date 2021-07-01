@@ -167,7 +167,7 @@ class SingUpView extends React.Component{
             lastName: last_name,
             email: email,
             password: password,
-            avatar: image_url
+            avatar: image_url,
         }
 
         firebaseSdk.signUp(user)

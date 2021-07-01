@@ -149,7 +149,26 @@ const firebaseSdk = {
             auth()
                 .createUserWithEmailAndPassword(email, password)
                 .then((res) => {
-                    const userInfo = {...user, id: res.user.uid};
+                    const userInfo = {
+                        userId: res.user.uid,
+                        type: 100, // User: 100
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        avatar: user.avatar??'',
+                        address: '',
+                        interests: "",
+                        age: 0,
+                        bio: '',
+                        ratingTotal: 0,
+                        ratingCount: 0,
+                        isBanned: false,
+                        token: '',
+                        qbId: 0,
+                        friends: [],
+                        activities: [],
+                        outdoor: [],
+                    };
                     this.createUser(userInfo).then(() => {
                         resolve(userInfo);
                     }).catch((err) => {
@@ -216,7 +235,7 @@ const firebaseSdk = {
                 .get()
                 .then(snapshot => {
                     snapshot.forEach(doc => {
-                        if (doc.data().id === id) {
+                        if (doc.data().userId === id) {
                             resolve(doc.data());
                         }
                     })

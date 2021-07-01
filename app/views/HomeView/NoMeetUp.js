@@ -5,8 +5,8 @@ import {VectorIcon} from "../../containers/VectorIcon";
 const styles = StyleSheet.create({
     btnContainer: {
         marginTop: 40,
-        justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        flexGrow: 1
     },
     container: {
         borderRadius: 4,

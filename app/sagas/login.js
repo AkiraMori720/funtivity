@@ -7,6 +7,7 @@ import {CURRENT_USER} from "../constants/keys";
 import firebaseSdk from "../lib/firebaseSdk";
 import {appStart, ROOT_INSIDE, ROOT_OUTSIDE} from "../actions/app";
 
+
 const handleLoginSuccess = function* handleLoginSuccess({ data }) {
 	yield put(setUser(data));
 	yield put(appStart({root: ROOT_INSIDE}));

@@ -134,17 +134,20 @@ class SingInView extends React.Component {
         if(credential && credential.user._user){
             const oauth_user = credential.user._user;
             const providerData = oauth_user.providerData && oauth_user.providerData.length > 0 ? oauth_user.providerData[0] : {};
-            const user_info = {id: oauth_user.uid,  ...providerData};
+            const user_info = {
+                userId: oauth_user.uid,
+                ...providerData
+            };
             console.log('user_info', user_info);
 
-            firebaseSdk.createUser(user_info)
-                .then(async() => {
-                    await AsyncStorage.setItem(CURRENT_USER, JSON.stringify(user_info));
-                    loginSuccess(user_info);
-                })
-                .catch(err => {
-                    showErrorAlert(err, 'Error');
-                })
+            // firebaseSdk.createUser(user_info)
+            //     .then(async() => {
+            //         await AsyncStorage.setItem(CURRENT_USER, JSON.stringify(user_info));
+            //         loginSuccess(user_info);
+            //     })
+            //     .catch(err => {
+            //         showErrorAlert(err, 'Error');
+            //     })
         }
     }
 

@@ -1,28 +1,49 @@
 import React from 'react';
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
+import {Image, ImageBackground, Text, TouchableOpacity, View} from "react-native";
+
 import {themes} from "../../constants/colors";
 import sharedStyles from "../Styles";
 import StatusBar from "../../containers/StatusBar";
 import SafeAreaView from "../../containers/SafeAreaView";
 import {withTheme} from "../../theme";
-import {Image, ImageBackground, Text, TouchableOpacity, View} from "react-native";
 import styles from './styles';
 import images from "../../assets/images";
 import * as HeaderButton from "../../containers/HeaderButton";
+import firebaseSdk from "../../lib/firebaseSdk";
+import {showErrorAlert} from "../../lib/info";
+import {getActivities} from "../../utils/const";
 
 class AccountView extends React.Component {
     static propTypes = {
+        user: PropTypes.object,
         theme: PropTypes.string,
     }
 
     constructor(props) {
         super(props);
+        const userId = props.route.params?.userId;
+        const isFriend = props.user.friends.includes(userId);
         this.state = {
             account: {
-                id: null,
-            }
+                userId: userId,
+            },
+            isFriend
         }
         this.setHeader();
+        this.init();
+    }
+
+    init = () => {
+        const { navigation } = this.props;
+        firebaseSdk.getUser(this.state.account.userId)
+            .then(user => {
+                this.setState({account: user});
+            })
+            .catch(err => {
+                showErrorAlert('User not found.', '', () => navigation.pop());
+            })
     }
 
     setHeader = () => {
@@ -37,7 +58,7 @@ class AccountView extends React.Component {
 
     }
 
-    removeFriend = () => {
+    toogleFriend = () => {
 
     }
 
@@ -47,23 +68,23 @@ class AccountView extends React.Component {
 
     render() {
         const {theme} = this.props;
-        const {account} = this.state;
+        const {isFriend, account} = this.state;
         return (
             <SafeAreaView style={{backgroundColor: themes[theme].focusedBackground}}>
                 <StatusBar/>
-                <ImageBackground source={account.image_url ? {uri: account.image_url} : images.default_avatar}
+                <ImageBackground source={account.avatar ? {uri: account.avatar} : images.default_avatar}
                                  style={styles.headerContainer}>
                     <View style={styles.headerBackground}/>
-                    <Image source={account.image_url ? {uri: account.image_url} : images.default_avatar}
+                    <Image source={account.avatar ? {uri: account.avatar} : images.default_avatar}
                            style={styles.accountImage}/>
-                    <Text style={styles.accountEmail}>Email</Text>
-                    <Text style={styles.accountName}>Name</Text>
-                    <Text style={styles.accountAddress}>Full Address</Text>
+                    <Text style={styles.accountEmail}>{account.email??'Email'}</Text>
+                    <Text style={styles.accountName}>{account.firstName?(account.firstName +  account.lastName):'Name'}</Text>
+                    <Text style={styles.accountAddress}>{account.address??'Full Address'}</Text>
                     <View style={styles.actionContainer}>
-                        <TouchableOpacity onPress={this.removeFriend}>
+                        <TouchableOpacity onPress={this.toogleFriend}>
                             <ImageBackground source={images.bg_gray_button} style={styles.accountAction} imageStyle={{borderRadius: 20}}>
                                 <Image source={images.add_to_friends} style={styles.actionImage}/>
-                                <Text style={styles.actionText}>Remove Friends</Text>
+                                <Text style={styles.actionText}>{isFriend?'Remove Friends':'Add to Friends'}</Text>
                             </ImageBackground>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={this.sendMessage}>
@@ -76,15 +97,19 @@ class AccountView extends React.Component {
                 </ImageBackground>
                 <View style={styles.option}>
                     <Text style={styles.optionTitle}>Interests</Text>
-                    <Text style={styles.optionContent}>Hunt, Bird</Text>
+                    <Text style={styles.optionContent}>{account.interests}</Text>
                 </View>
                 <View style={styles.option}>
-                    <Text style={styles.optionTitle}>Interests</Text>
-                    <Text style={styles.optionContent}>Hunt, Bird</Text>
+                    <Text style={styles.optionTitle}>Activities</Text>
+                    <Text style={styles.optionContent}>{getActivities(account.activities)}</Text>
                 </View>
             </SafeAreaView>
         )
     }
 }
 
-export default withTheme(AccountView);
+const mapStateToProps = state => ({
+    user: state.login.user
+})
+
+export default connect(mapStateToProps, null)(withTheme(AccountView));
