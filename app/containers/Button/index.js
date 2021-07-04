@@ -28,7 +28,7 @@ import {
 	COLOR_BUTTON_APPLE_BLACK,
 	COLOR_BUTTON_TEXT_APPLE_LIGHT,
 	COLOR_BUTTON_TEXT_APPLE_DARK,
-	COLOR_BUTTON_TEXT_APPLE_BLACK, COLOR_ORANGE
+	COLOR_ORANGE
 } from '../../constants/colors';
 import sharedStyles from '../../views/Styles';
 import images from "../../assets/images";
@@ -153,9 +153,6 @@ const styles = StyleSheet.create({
 	},
 	text_color_apple_dark: {
 		color: COLOR_BUTTON_TEXT_APPLE_DARK
-	},
-	text_color_apple_black: {
-		color: COLOR_BUTTON_TEXT_APPLE_BLACK
 	},
 
 	button_size_Z: {

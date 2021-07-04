@@ -7,12 +7,20 @@ import SafeAreaView from "../../containers/SafeAreaView";
 import {withTheme} from "../../theme";
 import * as HeaderButton from "../../containers/HeaderButton";
 import styles from "./styles";
-import {Image, Modal, Text, View} from "react-native";
+import {Image, Modal, Text, TouchableOpacity, View} from "react-native";
 import {DATE_TIME_STRING_FORMAT, dateToString} from "../../utils/datetime";
 import images from "../../assets/images";
 import MeetupModal from "../HomeView/MeetupModal";
 import {connect} from "react-redux";
-import {showToast} from "../../lib/info";
+import {showErrorAlert, showToast} from "../../lib/info";
+import firebaseSdk, {
+    DB_ACTION_UPDATE, NOTIFICATION_STATE_ACCEPT,
+    NOTIFICATION_TYPE_FRIEND, NOTIFICATION_TYPE_MEET_UP,
+    STATE_ACCEPTED,
+    STATE_DECLINED,
+    STATE_PENDING
+} from "../../lib/firebaseSdk";
+import firestore from "@react-native-firebase/firestore";
 
 class MyMeetupView extends React.Component{
     static propTypes = {
@@ -25,9 +33,39 @@ class MyMeetupView extends React.Component{
         const meetup = props.route.params?.meetup;
         this.state = {
             meetup: meetup,
-            showModal: false
+            showModal: false,
+            interestedUsers: [],
+            joinUsers: []
         }
         this.setHeader();
+        this.init();
+    }
+
+    init = async() => {
+        const {meetup} = this.state;
+        const meetupDoc = await firestore().collection(firebaseSdk.TBL_MEET_UP).doc(meetup.id).get();
+        const meetupInfo = {id: meetup.id, ...meetupDoc.data()};
+
+        const userSnaps = await firestore().collection(firebaseSdk.TBL_USER).get();
+        const users = {};
+        userSnaps.forEach(s => users[s.data().userId] = s.data());
+
+        let interestedUsers = [];
+        let joinUsers = [];
+        meetupInfo.interestedUsers.forEach(i => {
+            if (users[i]){
+                interestedUsers.push(users[i]);
+            }
+        });
+        meetupInfo.joinUsers.forEach(i => {
+            const keys = i.split('-----');
+            if (users[keys[0]]){
+                joinUsers.push({...users[keys[0]], state: Number(keys[1])});
+            }
+        });
+
+        console.log('interested and joined', interestedUsers, joinUsers);
+        this.setState({meetup: meetupInfo, interestedUsers, joinUsers});
     }
 
     setHeader = () => {
@@ -47,9 +85,38 @@ class MyMeetupView extends React.Component{
         this.setState({showModal: false});
     }
 
+    onActionJoin = (account, state) => {
+        const {meetup} = this.state;
+        const {user} = this.props;
+        const joinUsers = meetup.joinUsers.map(i => {
+            const keys = i.split('-----');
+            if (keys[0] === account.userId){
+                return state === STATE_ACCEPTED?`${account.userId}-----${STATE_ACCEPTED}`:`${account.userId}-----${STATE_DECLINED}`;
+            }
+            return i;
+        });
+        firebaseSdk.setData(firebaseSdk.TBL_MEET_UP, DB_ACTION_UPDATE, {id: meetup.id, joinUsers})
+            .then(() => {
+                showToast('Success');
+                const notification = {
+                    type: NOTIFICATION_TYPE_MEET_UP,
+                    state: state,
+                    sender: user.userId,
+                    receiver: account.userId,
+                    meetupId: meetup.id,
+                    message: `${user.firstName} ${user.lastName}` + (state===STATE_ACCEPTED?'accepted your join request.':'declined your join request')
+                }
+                firebaseSdk.registerNotification(notification, account.token).then(() => {}).catch((err) => {})
+                this.init();
+            })
+            .catch(err => {
+                showErrorAlert('Failed.');
+            })
+    }
+
     render(){
         const {user, theme} = this.props;
-        const {showModal, meetup} = this.state;
+        const {showModal, meetup, joinUsers, interestedUsers} = this.state;
         return (
             <SafeAreaView style={{ backgroundColor: themes[theme].backgroundColor }}>
                 <StatusBar/>
@@ -57,22 +124,22 @@ class MyMeetupView extends React.Component{
                     <View style={styles.detail}>
                         <View style={styles.header}>
                             <Text style={[styles.titleText, {color: themes[theme].titleText}]}>{meetup.meetupName}</Text>
-                            <Text style={[styles.captionText, {color: themes[theme].infoText}]}>{meetup.location} - {dateToString(meetup.date, DATE_TIME_STRING_FORMAT)}</Text>
+                            <Text style={[styles.captionText, {color: themes[theme].infoText}]}>{meetup.location} - {meetup.date?dateToString(meetup.date, DATE_TIME_STRING_FORMAT):null}</Text>
                         </View>
                         <View style={styles.content}>
                             <Image style={styles.mainImage} source={{uri: meetup.photoA}}/>
                             <View style={styles.subImages}>
-                                {(meetup.photoB.length > 0) ? <Image style={styles.subImage} source={{uri: meetup.photoB}}/>: null}
-                                {(meetup.photoC.length > 0) ? <Image style={styles.subImage} source={{uri: meetup.photoC}}/>: null}
+                                {(meetup.photoB?.length > 0) ? <Image style={styles.subImage} source={{uri: meetup.photoB}}/>: null}
+                                {(meetup.photoC?.length > 0) ? <Image style={styles.subImage} source={{uri: meetup.photoC}}/>: null}
                             </View>
                         </View>
                         <View style={styles.descriptionContainer}>
                             <Text style={{color: themes[theme].infoText}}>{meetup.description}</Text>
                         </View>
                         <View style={styles.ownerContainer}>
-                            <Image source={meetup.owner.avatar?{uri: meetup.owner.avatar}:images.default_avatar} style={styles.avatar}/>
+                            <Image source={user.avatar?{uri: user.avatar}:images.default_avatar} style={styles.avatar}/>
                             <View style={styles.ownerContent}>
-                                <Text style={[styles.ownerName, {color: themes[theme].actionColor}]}>{meetup.owner.firstName} {meetup.owner.lastName}</Text>
+                                <Text style={[styles.ownerName, {color: themes[theme].actionColor}]}>{user.firstName} {user.lastName}</Text>
                                 <Text style={[styles.ownerCaption, {color: themes[theme].infoText}]}>Meetup Creator</Text>
                             </View>
                         </View>
@@ -80,11 +147,44 @@ class MyMeetupView extends React.Component{
                     <View style={styles.extension}>
                         <View style={styles.join}>
                             <View style={[styles.headerBar, {backgroundColor: themes[theme].headerBackground}]}><Text style={styles.headerTitle}>JOIN REQUESTS</Text></View>
-                            <View style={styles.extensionContent}></View>
+                            <View style={styles.extensionContent}>
+                                {
+                                    joinUsers.map(j => (
+                                        <View style={styles.userContainer}>
+                                            <Image source={j.avatar?{uri: j.avatar}:images.default_avatar} style={styles.avatar}/>
+                                            <View style={styles.userContent}>
+                                                <Text style={[styles.userName, {color: themes[theme].textColor}]}>{j.firstName} {j.lastName}</Text>
+                                                {
+                                                    j.state === STATE_PENDING &&
+                                                    <View style={styles.actionContainer}>
+                                                        <TouchableOpacity onPress={() => this.onActionJoin(j, STATE_ACCEPTED)} style={styles.userAction}>
+                                                            <Image source={images.ic_accept} style={styles.action}/>
+                                                        </TouchableOpacity>
+                                                        <TouchableOpacity onPress={() => this.onActionJoin(j, STATE_DECLINED)} style={styles.userAction}>
+                                                            <Image source={images.ic_close} style={styles.action}/>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                }
+                                            </View>
+                                        </View>
+                                    ))
+                                }
+                            </View>
                         </View>
                         <View style={styles.interested}>
                             <View style={[styles.headerBar,{backgroundColor: themes[theme].headerBackground}]}><Text style={styles.headerTitle}>INTERESTED</Text></View>
-                            <View style={styles.extensionContent}></View>
+                            <View style={styles.extensionContent}>
+                                {
+                                    interestedUsers.map(i => (
+                                        <View style={styles.userContainer}>
+                                            <Image source={i.avatar?{uri: i.avatar}:images.default_avatar} style={styles.avatar}/>
+                                            <View style={styles.userContent}>
+                                                <Text style={[styles.userName, {color: themes[theme].textColor}]}>{i.firstName} {i.lastName}</Text>
+                                            </View>
+                                        </View>
+                                    ))
+                                }
+                            </View>
                         </View>
                     </View>
                 </View>

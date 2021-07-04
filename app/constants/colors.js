@@ -24,13 +24,13 @@ export const COLOR_BUTTON_TEXT_FACEBOOK = '#FFFFFF';
 export const COLOR_BUTTON_TEXT_GOOGLE = '#FFFFFF';
 export const COLOR_BUTTON_TEXT_APPLE_LIGHT = '#FFFFFF';
 export const COLOR_BUTTON_TEXT_APPLE_DARK = '#000000';
-export const COLOR_BUTTON_TEXT_APPLE_BLACK = '#000000';
 
 export const COLOR_TEXT = '#292E35';
 export const COLOR_SEPARATOR = '#CBCED1';
 export const COLOR_SUCCESS = '#2de0a5';
 export const COLOR_PRIMARY = '#1d74f5';
-export const COLOR_WHITE = '#fff';
+export const COLOR_WHITE = '#ffffff';
+export const COLOR_BLACK = '#000000';
 export const COLOR_TITLE = '#0C0D0F';
 export const COLOR_BORDER = '#e1e5e8';
 export const COLOR_UNREAD = '#e1e5e8';

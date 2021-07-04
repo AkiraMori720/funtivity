@@ -10,6 +10,9 @@ import {appStart, ROOT_INSIDE, ROOT_OUTSIDE} from "../actions/app";
 
 const handleLoginSuccess = function* handleLoginSuccess({ data }) {
 	yield put(setUser(data));
+	try{
+		yield firebaseSdk.setFcmToken(data.id);
+	} catch (e) {}
 	yield put(appStart({root: ROOT_INSIDE}));
 };
 

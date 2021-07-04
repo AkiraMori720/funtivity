@@ -1,9 +1,10 @@
 import React from 'react';
 import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 
-import {COLOR_BLUE, COLOR_WHITE, themes} from "../../constants/colors";
+import {COLOR_BLUE, COLOR_GREEN, COLOR_WHITE, themes} from "../../constants/colors";
 import {DATE_TIME_STRING_FORMAT, dateToString} from "../../utils/datetime";
 import images from "../../assets/images";
+import {STATE_PENDING} from "../../lib/firebaseSdk";
 
 const styles = StyleSheet.create({
     container: {
@@ -15,9 +16,8 @@ const styles = StyleSheet.create({
     mainContainer: {
         width: '90%',
         alignSelf: 'center',
-        height: 400,
         padding: 12,
-        borderRadius: 8
+        borderRadius: 8,
     },
     header: {
         marginBottom: 8
@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     content: {
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
@@ -48,9 +47,12 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 96
     },
+    description: {
+        marginTop: 8
+    },
     btnContainer: {
         width: '100%',
-        backgroundColor: COLOR_BLUE
+        marginTop: 8
     },
     btnText: {
         marginVertical: 12,
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const ReviewMeetup = ({ meetup, onPressCancel, onPressOwner, theme }) => (
+const ReviewMeetup = ({ meetup, onPressInterested, onPressJoin, onPressCancel, onPressOwner, theme }) => (
     <View style={styles.container}>
         <View style={[styles.mainContainer, {backgroundColor: themes[theme].backgroundColor}]}>
             <View style={styles.header}>
@@ -92,7 +94,7 @@ const ReviewMeetup = ({ meetup, onPressCancel, onPressOwner, theme }) => (
                     {(meetup.photoC.length > 0) ? <Image style={styles.subImage} source={{uri: meetup.photoC}}/>: null}
                 </View>
             </View>
-            <View>
+            <View style={styles.description}>
                 <Text style={{color: themes[theme].infoText}}>{meetup.description}</Text>
             </View>
             <TouchableOpacity onPress={onPressOwner} style={styles.ownerContainer}>
@@ -102,7 +104,13 @@ const ReviewMeetup = ({ meetup, onPressCancel, onPressOwner, theme }) => (
                     <Text style={[styles.ownerCaption, {color: themes[theme].infoText}]}>Meetup Creator</Text>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnContainer} onPress={onPressCancel}>
+            {meetup.isAfter && !meetup.interested && <TouchableOpacity style={[styles.btnContainer, {backgroundColor: COLOR_BLUE}]} onPress={onPressInterested}>
+                <Text style={styles.btnText}>Interested</Text>
+            </TouchableOpacity>}
+            {meetup.isAfter && meetup.joinState !== STATE_PENDING && <TouchableOpacity style={[styles.btnContainer, {backgroundColor: COLOR_GREEN}]} onPress={onPressJoin}>
+                <Text style={styles.btnText}>Going</Text>
+            </TouchableOpacity>}
+            <TouchableOpacity style={[styles.btnContainer, {backgroundColor: COLOR_BLUE}]} onPress={onPressCancel}>
                 <Text style={styles.btnText}>Cancel</Text>
             </TouchableOpacity>
         </View>

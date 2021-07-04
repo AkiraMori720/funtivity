@@ -30,8 +30,12 @@ const images = {
     ic_menu_settings: require('./images/ic_menu_settings.png'),
     ic_menu_logout: require('./images/ic_menu_logout.png'),
     ic_add: require('./images/img_add.png'),
-    ic_close: require('./images/ic_decline.png')
-
+    ic_close: require('./images/ic_decline.png'),
+    ic_accept: require('./images/ic_accept.png'),
+    ic_done: require('./images/ic_done.png'),
+    ic_dot: require('./images/ic_circle.png'),
+    ic_rate_select: require('./images/ic_rate_select.png'),
+    ic_rate_unselect: require('./images/ic_rate_unselect.png'),
 };
 
 export default images;

@@ -11,11 +11,13 @@ export default StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        flexGrow: 1
     },
     itemImage: {
         width: 48,
-        height: 48
+        height: 48,
+        borderRadius: 24
     },
     itemName: {
         marginLeft: 12

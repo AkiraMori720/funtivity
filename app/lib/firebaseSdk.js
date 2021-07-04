@@ -1,6 +1,7 @@
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import database from "@react-native-firebase/database";
 import storage from '@react-native-firebase/storage';
 
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -9,6 +10,7 @@ import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
 
 import NetInfo from '@react-native-community/netinfo';
 import messaging from "@react-native-firebase/messaging";
+import {now} from "moment";
 
 const CLOUD_MESSAGING_SERVER_KEY = 'AAAAfoaJ3wk:APA91bH9EK9uwyXrFaGjxu09s-WJIkEt5l26yaQKqOaomDhKLhWvdefpDLsVg4AEaJxOd1c-76wq4aLharmvy8oG2UaEqptb64Vr3yiXsvggizwhz7ryctVPSApObfzi9KOGJHT_PUz5';
 const GOOGLE_SIGN_IN_WEBCLIENT_ID = '543423061769-d9r2rv8t2bqom533um8q1k0gvhds5010.apps.googleusercontent.com';
@@ -20,6 +22,19 @@ GoogleSignin.configure({
 export const DB_ACTION_ADD = 'add';
 export const DB_ACTION_UPDATE = 'update';
 export const DB_ACTION_DELETE = 'delete';
+
+export const STATE_PENDING = 0;
+export const STATE_ACCEPTED = 1;
+export const STATE_DECLINED = 2;
+
+export const NOTIFICATION_TYPE_FRIEND = 0;
+export const NOTIFICATION_TYPE_MEET_UP = 1;
+export const NOTIFICATION_TYPE_CHAT = 2;
+export const NOTIFICATION_STATE_PENDING = 0;
+export const NOTIFICATION_STATE_ACCEPT = 1;
+export const NOTIFICATION_STATE_DECLINE = 2;
+export const NOTIFICATION_STATE_REMOVE = 3;
+
 
 const firebaseSdk = {
     TBL_USER : "User",
@@ -194,8 +209,7 @@ const firebaseSdk = {
         return new Promise((resolve, reject) => {
             firestore()
                 .collection(this.TBL_USER)
-                .doc(userInfo.id)
-                .set(userInfo)
+                .add(userInfo)
                 .then(() => {
                     resolve();
                 })
@@ -236,7 +250,11 @@ const firebaseSdk = {
                 .then(snapshot => {
                     snapshot.forEach(doc => {
                         if (doc.data().userId === id) {
-                            resolve(doc.data());
+                            const user = {
+                                id: doc.id,
+                                ...doc.data()
+                            }
+                            resolve(user);
                         }
                     })
                     resolve('no exist');
@@ -336,6 +354,36 @@ const firebaseSdk = {
         })
     },
 
+    updateFriends(myId, accountId, action){
+        return new Promise(async (resolve, reject) => {
+            const db = firebase.firestore();
+            const myRef = db.collection(firebaseSdk.TBL_USER).doc(myId);
+            const userRef = db.collection(firebaseSdk.TBL_USER).doc(accountId);
+            try {
+                await db.runTransaction(async (t) => {
+                    const myDoc = await t.get(myRef);
+                    const userDoc = await t.get(userRef);
+
+                    let myFriends = myDoc.data().friends;
+                    let userFriends = userDoc.data().friends;
+                    if(action === DB_ACTION_ADD){
+                        myFriends = [...myFriends, userDoc.data().userId];
+                        userFriends = [...userFriends, myDoc.data().userId];
+                    } else {
+                        myFriends = myFriends.filter(f => f!== userDoc.data().userId);
+                        userFriends = myFriends.filter(f => f!== myDoc.data().userId);
+                    }
+
+                    t.update(myRef, {friends: myFriends});
+                    t.update(userRef, {friends: userFriends});
+                    resolve({myFriends, userFriends});
+                });
+            } catch (e) {
+                reject(e);
+            }
+        });
+    },
+
     uploadMedia(type, path){
         const milliSeconds = new Date().getMilliseconds();
         return new Promise((resolve, reject) => {
@@ -353,6 +401,55 @@ const firebaseSdk = {
         })
     },
 
+    async saveMessage(roomId, message, receiver){
+        const statusRef = database().ref('rooms/' + roomId + '/status/' + message.receiver);
+        const status = (await statusRef.once('value')).val();
+        console.log('chatter status', status);
+        if(!status || status === 'offline'){
+            await firebase.firestore().collection(this.TBL_ROOM).doc(roomId).update({lastMessage: message.message, confirmUser: message.receiver});
+            if(receiver.token) {
+                const text = `${receiver.firstName} ${receiver.lastName} sent new Message: ${message.message}`;
+                this.sendNotifications([receiver.token], {
+                    type: NOTIFICATION_TYPE_CHAT,
+                    state: NOTIFICATION_STATE_PENDING,
+                    message: text,
+                    sender: message.sender,
+                    receiver: message.receiver,
+                    date: now(),
+                    meetupId: ""
+                })
+            }
+        }
+        return await firebase.firestore().collection(this.TBL_MESSAGE).add(message);
+    },
+
+    onOnline(roomId, userId){
+        const statusRef = database().ref('rooms/' + roomId + '/status/' + userId);
+        statusRef.set('online');
+        statusRef.onDisconnect().set('offline').then(() => {}).catch(() => {});
+    },
+
+    onOffline(roomId, userId){
+        const statusRef = database().ref('rooms/' + roomId + '/status/' + userId);
+        statusRef.set('offline');
+    },
+
+    registerNotification(notification, token){
+        return new Promise((resolve, reject) => {
+            firestore()
+                .collection(this.TBL_NOTIFICATION)
+                .add(notification)
+                .then(() => {
+                    if(token){
+                        this.sendNotifications([token], notification);
+                    }
+                    resolve();
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+        })
+    },
 
     async setFcmToken(userid){
         const authStatus = await messaging().requestPermission();
@@ -361,22 +458,19 @@ const firebaseSdk = {
             const fcmToken = await messaging().getToken();
             if (fcmToken) {
                 console.log("Your Firebase Token is:", fcmToken);
-                return setData(this.TBL_USER, DB_ACTION_UPDATE, {id: userid, fcmToken: fcmToken});
+                this.setData(this.TBL_USER, DB_ACTION_UPDATE, {id: userid, token: fcmToken});
+                return;
             }
         }
         console.log("Failed", "No token received");
         return null
     },
 
-    sendNotifications(tokens, title, content, data){
+    sendNotifications(tokens, data){
         for (let i = 0; i < tokens.length; i++) {
             let params = {
                 to: tokens[i],
-                data,
-                notification: {
-                    body: content,
-                    title: title
-                }
+                data
             };
 
             let options = {

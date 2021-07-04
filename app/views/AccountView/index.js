@@ -11,12 +11,20 @@ import {withTheme} from "../../theme";
 import styles from './styles';
 import images from "../../assets/images";
 import * as HeaderButton from "../../containers/HeaderButton";
-import firebaseSdk from "../../lib/firebaseSdk";
+import firebaseSdk, {
+    DB_ACTION_ADD,
+    DB_ACTION_DELETE, NOTIFICATION_STATE_ACCEPT,
+    NOTIFICATION_STATE_PENDING, NOTIFICATION_STATE_REMOVE,
+    NOTIFICATION_TYPE_FRIEND
+} from "../../lib/firebaseSdk";
 import {showErrorAlert} from "../../lib/info";
 import {getActivities} from "../../utils/const";
+import ActivityIndicator from "../../containers/ActivityIndicator";
+import {setUser as setUserAction} from "../../actions/login";
 
 class AccountView extends React.Component {
     static propTypes = {
+        setUser: PropTypes.func,
         user: PropTypes.object,
         theme: PropTypes.string,
     }
@@ -29,7 +37,8 @@ class AccountView extends React.Component {
             account: {
                 userId: userId,
             },
-            isFriend
+            isFriend,
+            loading: false,
         }
         this.setHeader();
         this.init();
@@ -59,7 +68,37 @@ class AccountView extends React.Component {
     }
 
     toogleFriend = () => {
-
+        const {isFriend, account} = this.state;
+        const {user, setUser} = this.props;
+        this.setState({loading: true});
+        firebaseSdk.updateFriends(user.id, account.id, isFriend?DB_ACTION_DELETE:DB_ACTION_ADD)
+            .then(({myFriends, userFriends}) => {
+                if(isFriend){
+                    const notification = {
+                        type: NOTIFICATION_TYPE_FRIEND,
+                        state: NOTIFICATION_STATE_ACCEPT,
+                        sender: user.userId,
+                        receiver: account.userId,
+                        meetupId: "",
+                        message: `${user.firstName} ${user.lastName} sent friend request.`
+                    }
+                    firebaseSdk.registerNotification(notification, account.token).then(() => {}).catch((err) => {})
+                } else if(account.token) {
+                    const notification = {
+                        type: NOTIFICATION_TYPE_FRIEND,
+                        state: NOTIFICATION_STATE_REMOVE,
+                        sender: user.userId,
+                        receiver: account.userId,
+                        meetupId: "",
+                        message: `${user.firstName} ${user.lastName} has removed you as a friend.`
+                    }
+                    firebaseSdk.sendNotifications([account.token], notification);
+                }
+                setUser({friends: myFriends});
+                const newAccount = {...account, friends: userFriends};
+                const isFriend = myFriends.includes(account.userId);
+                this.setState({account: newAccount, loading: false, isFriend});
+            })
     }
 
     sendMessage = () => {
@@ -68,10 +107,11 @@ class AccountView extends React.Component {
 
     render() {
         const {theme} = this.props;
-        const {isFriend, account} = this.state;
+        const {isFriend, account, loading} = this.state;
         return (
             <SafeAreaView style={{backgroundColor: themes[theme].focusedBackground}}>
                 <StatusBar/>
+                {loading && <ActivityIndicator absolute theme={theme} size={'large'}/>}
                 <ImageBackground source={account.avatar ? {uri: account.avatar} : images.default_avatar}
                                  style={styles.headerContainer}>
                     <View style={styles.headerBackground}/>
@@ -112,4 +152,7 @@ const mapStateToProps = state => ({
     user: state.login.user
 })
 
-export default connect(mapStateToProps, null)(withTheme(AccountView));
+const mapDispatchToProps = dispatch => ({
+    setUser: params => dispatch(setUserAction(params))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(AccountView));

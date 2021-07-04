@@ -51,7 +51,13 @@ export const Favorite = React.memo(({ onPress, testID }) => (
 
 export const Edit = React.memo(({ onPress, testID, ...props }) => (
 	<Container>
-		<Item iconName='edit' vector='MaterialIcons' onPress={onPress} testID={testID} {...props} />
+		<Item iconName='edit' vector='MaterialIcons' size={20} onPress={onPress} testID={testID} {...props} />
+	</Container>
+));
+
+export const Report = React.memo(({ onPress, testID, ...props }) => (
+	<Container>
+		<Item iconName='flag' vector='MaterialIcons' size={20} onPress={onPress} testID={testID} {...props} />
 	</Container>
 ));
 

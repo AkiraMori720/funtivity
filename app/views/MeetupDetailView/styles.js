@@ -60,44 +60,58 @@ export default StyleSheet.create({
     extension: {
         marginTop: 8
     },
-    join: {
-
-    },
-    interested: {
-
-    },
-    headerBar: {
-        padding: 12
-    },
-    headerTitle: {
-        color: COLOR_WHITE
-    },
-    extensionContent: {
-
-    },
-    userContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 8,
-        paddingHorizontal: 12
-    },
-    userContent: {
-        flexGrow: 1,
+    actionBar: {
+        padding: 12,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    userName: {
+    headerTitle: {
+        color: COLOR_WHITE
+    },
+    actionText: {
+        color: COLOR_WHITE,
+        textDecorationLine: 'underline'
+    },
+    itemContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+    },
+    itemContent: {
+        justifyContent: 'flex-start',
+        flexGrow: 1,
         marginLeft: 8
     },
-    actionContainer: {
-        flexDirection: 'row'
+    itemAccountImage: {
+
     },
-    userAction: {
-        marginHorizontal: 4
+    itemHeader: {
+        marginTop: 4,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
-    action: {
-        width: 32,
-        height: 32
+    unread: {
+        width: 16,
+        height: 16,
+        borderRadius: 8
+    },
+    itemImage: {
+        width: 48,
+        height: 48,
+        borderRadius: 24
+    },
+    itemTitle: {
+        fontWeight: 'bold'
+    },
+    itemMessage: {
+
+    },
+    rateContainer: {
+
+    },
+    rating: {
+
     }
 });
