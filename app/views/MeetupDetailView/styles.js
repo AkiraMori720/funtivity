@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import {COLOR_WHITE} from "../../constants/colors";
+import {COLOR_BLACK, COLOR_WHITE} from "../../constants/colors";
 
 export default StyleSheet.create({
     container: {
@@ -74,44 +74,40 @@ export default StyleSheet.create({
         textDecorationLine: 'underline'
     },
     itemContainer: {
-        flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         paddingVertical: 12,
         paddingHorizontal: 20,
     },
     itemContent: {
-        justifyContent: 'flex-start',
-        flexGrow: 1,
-        marginLeft: 8
+        flexDirection: 'row'
     },
     itemAccountImage: {
-
-    },
-    itemHeader: {
-        marginTop: 4,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    unread: {
-        width: 16,
-        height: 16,
-        borderRadius: 8
-    },
-    itemImage: {
         width: 48,
         height: 48,
         borderRadius: 24
     },
+    itemHeader: {
+        marginLeft: 8,
+        flexDirection: 'column'
+    },
+    itemImageContainer: {
+        marginTop: 4,
+        width: '100%',
+    },
+    itemImage: {
+        width: '100%',
+        height: 200
+    },
     itemTitle: {
-        fontWeight: 'bold'
+        color: COLOR_BLACK
     },
     itemMessage: {
-
+        fontSize: 12,
     },
     rateContainer: {
-
+        flexDirection: 'row'
     },
     rating: {
-
+        marginRight: 12,
     }
 });

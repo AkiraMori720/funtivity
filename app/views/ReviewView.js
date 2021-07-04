@@ -170,7 +170,7 @@ class ReviewView extends React.Component{
 
     render(){
         const {theme} = this.props;
-        const {image_path, isSaving} = this.state;
+        const {image_path, isSaving, rating} = this.state;
         return (
             <SafeAreaView style={{ backgroundColor: themes[theme].backgroundColor }}>
                 <StatusBar/>
@@ -178,7 +178,7 @@ class ReviewView extends React.Component{
                     <View style={styles.rateContainer}>
                         <Text style={[styles.rateCaption, {color: themes[theme].controlText}]}>Tap a star to rate</Text>
                         <Rating
-                            initValue={0}
+                            value={rating}
                             onChangeRating={(value) => this.setState({rating: value})}
                         />
                     </View>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import images from "../assets/images";
@@ -16,18 +16,16 @@ const styles = StyleSheet.create({
     }
 })
 
-export const Rating = ({initValue, onChangeRating}) => {
-    const [rating, setRating] = useState(initValue);
-    const onChangeValue = (value) => {
-        onChangeRating(value);
-        setRating(value);
+export const Rating = ({value, onChangeRating, size=20, changeable = true}) => {
+    const onChangeValue = (rate) => {
+        onChangeRating(rate);
     }
     return (
         <View style={styles.container}>
             {
                 [0,1,2,3,4].map(i => (
-                <TouchableOpacity onPress={() => onChangeValue(i+1)} style={styles.rateContainer}>
-                    <Image source={i<rating?images.ic_rate_select:images.ic_rate_unselect} style={styles.rateImage}/>
+                <TouchableOpacity disabled={!changeable} onPress={() => onChangeValue(i+1)} style={styles.rateContainer}>
+                    <Image source={i<value?images.ic_rate_select:images.ic_rate_unselect} style={{width: size, height: size}}/>
                 </TouchableOpacity>
                 ))
             }
@@ -36,6 +34,8 @@ export const Rating = ({initValue, onChangeRating}) => {
 }
 
 Rating.propTypes = {
-    initValue: PropTypes.number,
+    value: PropTypes.number,
+    size: PropTypes.number,
+    changeable: PropTypes.bool,
     onChangeRating: PropTypes.func,
 };
