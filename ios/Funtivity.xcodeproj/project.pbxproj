@@ -15,6 +15,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		93800738A2705B66974F05EB /* libPods-Funtivity-FuntivityTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB22A1AFF4379ECE9A93968 /* libPods-Funtivity-FuntivityTests.a */; };
 		A0E34D932692AB08000ACD18 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E34D922692AB08000ACD18 /* File.swift */; };
+		A0E34D952692ADED000ACD18 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A0E34D942692ADED000ACD18 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		91777ECC061C008C9335688A /* Pods-Funtivity-FuntivityTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Funtivity-FuntivityTests.release.xcconfig"; path = "Target Support Files/Pods-Funtivity-FuntivityTests/Pods-Funtivity-FuntivityTests.release.xcconfig"; sourceTree = "<group>"; };
 		A0E34D912692AB07000ACD18 /* Funtivity-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Funtivity-Bridging-Header.h"; sourceTree = "<group>"; };
 		A0E34D922692AB08000ACD18 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		A0E34D942692ADED000ACD18 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A3F5F706717BC6B4B6B3608E /* Pods-Funtivity-FuntivityTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Funtivity-FuntivityTests.debug.xcconfig"; path = "Target Support Files/Pods-Funtivity-FuntivityTests/Pods-Funtivity-FuntivityTests.debug.xcconfig"; sourceTree = "<group>"; };
 		BD3BC3F2A4E1258BB89E2A8C /* libPods-Funtivity.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Funtivity.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBB22A1AFF4379ECE9A93968 /* libPods-Funtivity-FuntivityTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Funtivity-FuntivityTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +91,7 @@
 		13B07FAE1A68108700A75B9A /* Funtivity */ = {
 			isa = PBXGroup;
 			children = (
+				A0E34D942692ADED000ACD18 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -250,6 +253,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A0E34D952692ADED000ACD18 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
