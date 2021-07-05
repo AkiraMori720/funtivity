@@ -15,6 +15,7 @@ import styles from "./styles";
 import images from "../../assets/images";
 import firebaseSdk from "../../lib/firebaseSdk";
 import {showErrorAlert} from "../../lib/info";
+import {isIOS} from "../../utils/deviceInfo";
 
 class ChatView extends React.Component {
     static propTypes = {
@@ -160,7 +161,7 @@ class ChatView extends React.Component {
                     showAvatarForEveryMessage
                     renderAvatarOnTop={true}
                     alwaysShowSend={true}
-                    bottomOffset={44}
+                    bottomOffset={isIOS?44:0}
                     renderInputToolbar={() => this.renderInput()}
                 />
             </SafeAreaView>
