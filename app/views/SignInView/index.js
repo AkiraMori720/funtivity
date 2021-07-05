@@ -106,48 +106,62 @@ class SingInView extends React.Component {
     }
 
     onSignInWithOAuth = async (oauth) => {
+        const {loginSuccess} = this.props;
         switch (oauth){
             case 'facebook':
                 await firebaseSdk.facebookSignIn()
-                    .then(async(user) => {
-                        await this.oauthLogin(user);
+                    .then(async(credential) => {
+                        console.log('facebook', credential);
+                        const { user } = credential;
+                        const names = user.name.split(' ');
+                        const credentialInfo = {
+                            uid: user.uid,
+                            firstName: names[0],
+                            lastName: names[1]??'',
+                            email: user.email,
+                            avatar: user.photoURL??''
+                        }
+                        await firebaseSdk.socialLogin(credentialInfo).then((user) => {
+                            loginSuccess(user);
+                        })
                     });
                 break;
             case 'google':
                 await firebaseSdk.googleSignIn()
-                    .then(async(user) => {
-                        console.log('user', user);
-                        await this.oauthLogin(user);
+                    .then(async(credential) => {
+                        console.log('google', credential);
+                        const { user } = credential;
+                        const names = user.displayName.split(' ');
+                        const credentialInfo = {
+                            uid: user.uid,
+                            firstName: names[0],
+                            lastName: names[1]??'',
+                            email: user.email,
+                            avatar: user.photoURL??''
+                        }
+                        await firebaseSdk.socialLogin(credentialInfo).then((user) => {
+                            loginSuccess(user);
+                        })
                     })
                 break;
             case 'apple':
                 await firebaseSdk.appleSignIn()
-                    .then(async(user) => {
-                        await this.oauthLogin(user);
+                    .then(async(credential) => {
+                        console.log('apple', credential);
+                        const { user } = credential;
+                        const names = user.displayName.split(' ');
+                        const credentialInfo = {
+                            uid: user.uid,
+                            firstName: names[0],
+                            lastName: names[1]??'',
+                            email: user.email,
+                            avatar: user.photoURL??''
+                        }
+                        await firebaseSdk.socialLogin(credentialInfo).then((user) => {
+                            loginSuccess(user);
+                        })
                     });
                 break;
-        }
-    }
-
-    oauthLogin = async (credential) => {
-        const {loginSuccess} = this.props;
-        if(credential && credential.user._user){
-            const oauth_user = credential.user._user;
-            const providerData = oauth_user.providerData && oauth_user.providerData.length > 0 ? oauth_user.providerData[0] : {};
-            const user_info = {
-                userId: oauth_user.uid,
-                ...providerData
-            };
-            console.log('user_info', user_info);
-
-            // firebaseSdk.createUser(user_info)
-            //     .then(async() => {
-            //         await AsyncStorage.setItem(CURRENT_USER, JSON.stringify(user_info));
-            //         loginSuccess(user_info);
-            //     })
-            //     .catch(err => {
-            //         showErrorAlert(err, 'Error');
-            //     })
         }
     }
 
