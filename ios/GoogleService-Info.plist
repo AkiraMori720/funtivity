@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>543423061769-gp1lcaebsk4o7qig3glj1app8vro78s1.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.543423061769-gp1lcaebsk4o7qig3glj1app8vro78s1</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>543423061769-2iu39r724lqdv70904t07b3k6re3pqnf.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA8D93CKqDKRonSYNnpPRR-ZvWH-gLOQbg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>543423061769</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.brainyapps.funtivity</string>
+	<key>PROJECT_ID</key>
+	<string>funtivity-c691e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>funtivity-c691e.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:543423061769:ios:6578e3e00677decf68bdd8</string>
+	<key>DATABASE_URL</key>
+	<string>https://funtivity-c691e-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
