@@ -104,7 +104,8 @@ class MyMeetupView extends React.Component{
                     sender: user.userId,
                     receiver: account.userId,
                     meetupId: meetup.id,
-                    message: `${user.firstName} ${user.lastName}` + (state===STATE_ACCEPTED?'accepted your join request.':'declined your join request')
+                    message: `${user.firstName} ${user.lastName}` + (state===STATE_ACCEPTED?' accepted your join request.':' declined your join request'),
+                    date: new Date()
                 }
                 firebaseSdk.registerNotification(notification, account.token).then(() => {}).catch((err) => {})
                 this.init();

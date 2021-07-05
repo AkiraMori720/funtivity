@@ -26,6 +26,9 @@ import MyMeetupView from "../views/MyMeetupView";
 import MeetupDetailView from "../views/MeetupDetailView";
 import ReportView from "../views/ReportView";
 import ReviewView from "../views/ReviewView";
+import JoinedMeetupView from "../views/JoinedMeetupView";
+import ActivitiesView from "../views/ActivityView";
+import OutdoorActivitiesView from "../views/OutdoorActivityView";
 
 
 // Outside
@@ -131,6 +134,21 @@ const InsideStack = () => {
 				name='AddMeetup'
 				component={AddMeetupView}
 				options={AddMeetupView.navigationOptions}
+			/>
+			<Inside.Screen
+				name='JoinedMeetup'
+				component={JoinedMeetupView}
+				options={JoinedMeetupView.navigationOptions}
+			/>
+			<Inside.Screen
+				name='Activities'
+				component={ActivitiesView}
+				options={ActivitiesView.navigationOptions}
+			/>
+			<Inside.Screen
+				name='OutdoorActivities'
+				component={OutdoorActivitiesView}
+				options={OutdoorActivitiesView.navigationOptions}
 			/>
 			<Inside.Screen
 				name='Review'

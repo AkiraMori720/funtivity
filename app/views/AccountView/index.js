@@ -80,7 +80,8 @@ class AccountView extends React.Component {
                         sender: user.userId,
                         receiver: account.userId,
                         meetupId: "",
-                        message: `${user.firstName} ${user.lastName} sent friend request.`
+                        message: `${user.firstName} ${user.lastName} sent friend request.`,
+                        date: new Date()
                     }
                     firebaseSdk.registerNotification(notification, account.token).then(() => {}).catch((err) => {})
                 } else if(account.token) {
@@ -90,7 +91,8 @@ class AccountView extends React.Component {
                         sender: user.userId,
                         receiver: account.userId,
                         meetupId: "",
-                        message: `${user.firstName} ${user.lastName} has removed you as a friend.`
+                        message: `${user.firstName} ${user.lastName} has removed you as a friend.`,
+                        date: new Date()
                     }
                     firebaseSdk.sendNotifications([account.token], notification);
                 }

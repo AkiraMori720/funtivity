@@ -196,7 +196,8 @@ class HomeView extends React.Component {
             sender: user.userId,
             receiver: reviewMeetup.userId,
             meetupId: reviewMeetup.id,
-            message: `${user.firstName} ${user.lastName} is interested in an event!`
+            message: `${user.firstName} ${user.lastName} is interested in an event!`,
+            date: new Date()
         };
 
         this.setState({notifying: true});
@@ -221,7 +222,8 @@ class HomeView extends React.Component {
             sender: user.userId,
             receiver: reviewMeetup.userId,
             meetupId: reviewMeetup.id,
-            message: `${user.firstName} ${user.lastName} sent join request.`
+            message: `${user.firstName} ${user.lastName} sent join request.`,
+            date: new Date(),
         };
 
         this.setState({notifying: true});

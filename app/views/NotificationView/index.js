@@ -83,7 +83,7 @@ class NotificationView extends React.Component{
             <View style={styles.itemContent}>
                 <Text style={styles.itemMessage}>{item.message}</Text>
                 <Text style={styles.itemCaption}>Tap to go to Event Details</Text>
-                <Text style={styles.itemTime}>{moment(item.date.seconds * 1000).format(DATE_TIME_STRING_FORMAT)}</Text>
+                <Text style={styles.itemTime}>{item.date?(moment(item.date.seconds * 1000).format(DATE_TIME_STRING_FORMAT)):''}</Text>
             </View>
         </TouchableOpacity>);
     }

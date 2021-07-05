@@ -454,7 +454,7 @@ const firebaseSdk = {
                     message: text,
                     sender: message.sender,
                     receiver: message.receiver,
-                    date: now(),
+                    date: new Date(),
                     meetupId: ""
                 })
             }
