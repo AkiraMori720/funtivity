@@ -38,9 +38,11 @@ class ReportView extends React.Component{
 
     constructor(props) {
         super(props);
-        const meetup = props.route.params?.meetup;
+        const meetupId = props.route.params?.meetupId;
+        const account = props.route.params?.account;
         this.state = {
-            meetup,
+            meetupId,
+            account,
             reportText: '',
             isSaving: false
         }
@@ -60,13 +62,13 @@ class ReportView extends React.Component{
     onSubmit = () => {
         if(this.isValid()){
             const {user, navigation} = this.props;
-            const {reportText, meetup} = this.state;
+            const {reportText, account, meetupId} = this.state;
             this.setState({isSaving: true});
             const report = {
                 userId: user.userId,
-                reporterId: meetup.owner?.userId,
+                reporterId: account?.userId,
                 message: reportText,
-                meetupId: meetup.id,
+                meetupId: meetupId??"",
                 date: new Date()
             }
             firebaseSdk.setData(firebaseSdk.TBL_REPORT, DB_ACTION_ADD, report)

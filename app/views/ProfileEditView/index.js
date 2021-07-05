@@ -152,7 +152,7 @@ class ProfileEditView extends React.Component{
             lastName: last_name,
             interests: interests,
             address: location,
-            age: age,
+            age: Number(age),
             bio: bio
         }
 

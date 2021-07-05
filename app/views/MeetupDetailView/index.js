@@ -87,7 +87,7 @@ class MeetupDetailView extends React.Component {
         const {navigation} = this.props;
         const {meetup} = this.state;
 
-        navigation.navigate('Report', {meetup});
+        navigation.navigate('Report', {meetupId: meetup.id, account: meetup.owner});
     }
 
     onReview = () => {

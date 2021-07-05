@@ -60,12 +60,14 @@ class AccountView extends React.Component {
         const {navigation} = this.props;
         navigation.setOptions({
             title: 'Profile',
-            headerRight: () => <HeaderButton.Favorite onPress={this.onFavorite}/>
+            headerRight: () => <HeaderButton.Favorite onPress={this.onReport}/>
         })
     }
 
-    onFavorite = () => {
-
+    onReport = () => {
+        const {navigation} = this.props;
+        const {account} = this.state;
+        navigation.navigate('Report', {account});
     }
 
     toogleFriend = () => {
