@@ -21,6 +21,7 @@ import {showErrorAlert} from "../../lib/info";
 import {getActivities} from "../../utils/const";
 import ActivityIndicator from "../../containers/ActivityIndicator";
 import {setUser as setUserAction} from "../../actions/login";
+import firestore from "@react-native-firebase/firestore";
 
 class AccountView extends React.Component {
     static propTypes = {
@@ -103,8 +104,32 @@ class AccountView extends React.Component {
             })
     }
 
-    sendMessage = () => {
-
+    sendMessage = async () => {
+        const {user, navigation} = this.props;
+        const {account} = this.state;
+        const roomSnaps = await firestore().collection(firebaseSdk.TBL_ROOM).get();
+        let room = null;
+        roomSnaps.forEach(doc => {
+            const roomInfo = doc.data();
+            if ((user.userId === roomInfo.sender && account.userId === roomInfo.receiver) ||
+                (user.userId === roomInfo.receiver && account.userId === roomInfo.sender)) {
+                room = {id: doc.id, ...roomInfo, account};
+            }
+        });
+        console.log('room', room);
+        if(!room){
+            room = {
+                sender: user.userId,
+                receiver: account.userId,
+                date: new Date(),
+                lastMessage: "",
+                confirmUser: ""
+            }
+            const roomDocRef = await firestore().collection(firebaseSdk.TBL_ROOM).add(room);
+            const roomDoc = await roomDocRef.get();
+            return navigation.navigate("Chat", {room: {id: roomDoc.id, ...roomDoc.data(), account}});
+        }
+        navigation.navigate('Chat', {room});
     }
 
     render() {

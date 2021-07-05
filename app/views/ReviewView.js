@@ -138,7 +138,6 @@ class ReviewView extends React.Component{
                 rating: rating,
                 message: reviewText,
                 meetupId: meetup.id,
-                documentId: "",
                 photo: "",
                 video: "",
                 date: new Date()

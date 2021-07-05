@@ -67,7 +67,6 @@ class ReportView extends React.Component{
                 reporterId: meetup.owner?.userId,
                 message: reportText,
                 meetupId: meetup.id,
-                documentId: "",
                 date: new Date()
             }
             firebaseSdk.setData(firebaseSdk.TBL_REPORT, DB_ACTION_ADD, report)

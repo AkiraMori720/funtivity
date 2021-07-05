@@ -54,8 +54,8 @@ class MessageView extends React.Component {
             let list = [];
             querySnapShot.forEach(doc => {
                 const room = doc.data();
-                if(room.sender === user.userId){
-                    const receiver = users.find(u => u.userId === room.receiver);
+                if(room.sender === user.userId || room.receiver === user.userId){
+                    const receiver = users.find(u => u.userId === (room.sender === user.userId?room.receiver:room.sender));
                     const unread = room.confirmUser === user.userId;
                     list.push({id: doc.id, ...room, account: receiver, unread});
                 }
