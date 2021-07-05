@@ -71,7 +71,7 @@ export default function DatePicker({ placeholder, style, type, value, action, mi
 				is24Hour={true}
 				display='default'
 				minimumDate={minimumDate}
-				value={value??new Date()}
+				value={currentDate??new Date()}
 				onChange={onChange}
 				textColor={'black'}
 				themeVariant={'light'}

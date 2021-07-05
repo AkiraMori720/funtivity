@@ -122,7 +122,7 @@ class ProfileView extends React.Component{
                 navigation.navigate('Activities');
                 break;
             case 'outdoor_activities':
-                navigation.navigate('OutDoorActivities');
+                navigation.navigate('OutdoorActivities');
                 break;
             case 'all_joined_meetups':
                 navigation.navigate('JoinedMeetup');

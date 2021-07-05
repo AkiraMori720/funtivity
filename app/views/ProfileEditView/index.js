@@ -256,7 +256,7 @@ class ProfileEditView extends React.Component{
                                 value={age}
                                 placeholder={'Age'}
                                 returnKeyType='next'
-                                keyboardType='Numeric'
+                                keyboardType='numeric'
                                 onChangeText={age => this.setState({age: age.replace(/\D/gm, '')})}
                                 onSubmitEditing={() => {
                                     this.bioInput.focus();

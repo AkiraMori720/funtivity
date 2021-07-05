@@ -6,6 +6,7 @@
 #import <Firebase.h>
 
 #import "RNBootSplash.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -35,7 +36,7 @@ static void InitializeFlipper(UIApplication *application) {
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
-  
+
   if([FIRApp defaultApp] == nil){
     [FIRApp configure];
   }
@@ -58,6 +59,7 @@ static void InitializeFlipper(UIApplication *application) {
   [self.window makeKeyAndVisible];
   [RNBootSplash initWithStoryboard:@"LaunchScreen" rootView:rootView]; // <- initialization using the storyboard file name
 
+  [FBSDKApplicationDelegate initializeSDK:launchOptions];
   return YES;
 }
 

@@ -4,6 +4,7 @@ export default StyleSheet.create({
     headerContainer: {
         alignItems: 'center',
         justifyContent: 'center',
+        paddingTop: 32,
         height: 170
     },
     avatar: {

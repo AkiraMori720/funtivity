@@ -45,6 +45,7 @@
 		A0E34D912692AB07000ACD18 /* Funtivity-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Funtivity-Bridging-Header.h"; sourceTree = "<group>"; };
 		A0E34D922692AB08000ACD18 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		A0E34D942692ADED000ACD18 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A0E34D962692CE87000ACD18 /* Funtivity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Funtivity.entitlements; path = Funtivity/Funtivity.entitlements; sourceTree = "<group>"; };
 		A3F5F706717BC6B4B6B3608E /* Pods-Funtivity-FuntivityTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Funtivity-FuntivityTests.debug.xcconfig"; path = "Target Support Files/Pods-Funtivity-FuntivityTests/Pods-Funtivity-FuntivityTests.debug.xcconfig"; sourceTree = "<group>"; };
 		BD3BC3F2A4E1258BB89E2A8C /* libPods-Funtivity.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Funtivity.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBB22A1AFF4379ECE9A93968 /* libPods-Funtivity-FuntivityTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Funtivity-FuntivityTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +92,7 @@
 		13B07FAE1A68108700A75B9A /* Funtivity */ = {
 			isa = PBXGroup;
 			children = (
+				A0E34D962692CE87000ACD18 /* Funtivity.entitlements */,
 				A0E34D942692ADED000ACD18 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -509,6 +511,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Funtivity/Funtivity.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9LYPE5V96D;
 				ENABLE_BITCODE = NO;
@@ -523,8 +528,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brainyapps.funtivity;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brainyapps.funtivityapp;
 				PRODUCT_NAME = Funtivity;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Funtivity-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -538,6 +544,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Funtivity/Funtivity.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9LYPE5V96D;
 				INFOPLIST_FILE = Funtivity/Info.plist;
@@ -551,8 +560,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brainyapps.funtivity;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brainyapps.funtivityapp;
 				PRODUCT_NAME = Funtivity;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Funtivity-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

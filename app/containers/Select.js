@@ -12,7 +12,7 @@ import {VectorIcon} from "./VectorIcon";
 const styles = StyleSheet.create({
 	iosPadding: {
 		height: 48,
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	viewContainer: {
 		marginBottom: 8,
@@ -28,6 +28,9 @@ const styles = StyleSheet.create({
 	},
 	icon: {
 		right: 16
+	},
+	iosIcon: {
+		paddingVertical: 10
 	},
 	loading: {
 		padding: 0
@@ -55,7 +58,7 @@ export const Select = ({
 	const Icon = () => (
 		loading
 			? <ActivityIndicator style={styles.loading} />
-			: <VectorIcon size={12} name='chevron-down' type={'Iconic'} style={isAndroid && styles.icon} color={themes[theme].auxiliaryText} />
+			: <VectorIcon size={12} name='chevron-down' type={'Iconic'} style={isAndroid ? styles.icon:styles.iosIcon} color={themes[theme].auxiliaryText} />
 	);
 
 	return (

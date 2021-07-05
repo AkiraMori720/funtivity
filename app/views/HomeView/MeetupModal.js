@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.4)',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: 20,
+        paddingVertical: 40,
     },
     mainContainer: {
         width: '90%',
@@ -289,7 +289,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
                     inputRef={numberOfGuestsInput}
                     placeholder={'Number of Guests'}
                     returnKeyType='next'
-                    keyboardType='Numeric'
+                    keyboardType='numeric'
                     textContentType='oneTimeCode'
                     value={numberOfGuests}
                     onChangeText={value => setNumberOfGuests(value.replace(/\D/gm, ''))}

@@ -54,7 +54,7 @@ class OutdoorActivitiesView extends React.Component {
         this.mounted = false;
         this.state = {
             text: '',
-            selected: props.user.activities,
+            selected: props.user.outdoor,
             loading: false
         }
         this.categoryOptions = OUTDOOR_ARRAY.map((c, index) => ({value: index,  text: c}));
