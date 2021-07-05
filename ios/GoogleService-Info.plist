@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>543423061769-gp1lcaebsk4o7qig3glj1app8vro78s1.apps.googleusercontent.com</string>
+	<string>543423061769-vk55igkt4vlngmjj6o140edmrs1d9dgm.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.543423061769-gp1lcaebsk4o7qig3glj1app8vro78s1</string>
+	<string>com.googleusercontent.apps.543423061769-vk55igkt4vlngmjj6o140edmrs1d9dgm</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>543423061769-2iu39r724lqdv70904t07b3k6re3pqnf.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.brainyapps.funtivity</string>
+	<string>com.brainyapps.funtivityapp</string>
 	<key>PROJECT_ID</key>
 	<string>funtivity-c691e</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:543423061769:ios:6578e3e00677decf68bdd8</string>
+	<string>1:543423061769:ios:65d8beca481c713868bdd8</string>
 	<key>DATABASE_URL</key>
 	<string>https://funtivity-c691e-default-rtdb.firebaseio.com</string>
 </dict>
