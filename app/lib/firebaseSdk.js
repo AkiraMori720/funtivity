@@ -146,6 +146,45 @@ const firebaseSdk = {
         })
     },
 
+    socialLogin(socialCredential){
+        return new Promise(async (resolve, reject) => {
+            const userInfos = await firebase.firestore().collection(this.TBL_USER).get();
+            let userInfo = null;
+            userInfos.forEach(doc => {
+                if (doc.data().email === socialCredential.email) {
+                    userInfo = doc.data();
+                }
+            });
+            console.log('userInfo', userInfo);
+            if(userInfo){
+                resolve(userInfo);
+            } else {
+                userInfo = {
+                    userId: socialCredential.uid,
+                    type: 100, // User: 100
+                    firstName: socialCredential.firstName,
+                    lastName: socialCredential.lastName,
+                    email: socialCredential.email,
+                    avatar: socialCredential.avatar,
+                    address: '',
+                    interests: "",
+                    age: 0,
+                    bio: '',
+                    ratingTotal: 0,
+                    ratingCount: 0,
+                    isBanned: false,
+                    token: '',
+                    qbId: 0,
+                    friends: [],
+                    activities: [],
+                    outdoor: [],
+                }
+                userInfo = await firestore().collection(this.TBL_USER).add(userInfo);
+                return userInfo.data();
+            }
+        });
+    },
+
     resetPassword(email){
         return new Promise((resolve, reject) => {
             auth().sendPasswordResetEmail(email)
