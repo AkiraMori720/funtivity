@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {Image, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {Image, KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import {GiftedChat} from "react-native-gifted-chat";
 import moment from "moment";
@@ -97,6 +97,7 @@ class ChatView extends React.Component {
             } else {
                 this.state.messages = list;
             }
+            console.log('messages', list);
         });
     }
 
@@ -124,12 +125,7 @@ class ChatView extends React.Component {
     }
 
     renderInput = () => {
-        const {room, inputText} = this.state;
-        if (room.block && room.block.length) {
-            return (<View style={styles.inputContainer}>
-                <Text>This room is blocked!</Text>
-            </View>);
-        }
+        const {inputText} = this.state;
         return (
             <View style={styles.inputContainer}>
                 <TextInput
@@ -161,12 +157,10 @@ class ChatView extends React.Component {
                         name: `${user.firstName} ${user.lastName}`,
                         avatar: user.avatar??''
                     }}
-                    infiniteScroll
-                    wrapInSafeArea
-                    isCustomViewBottom
-                    minComposerHeight={28}
-                    maxComposerHeight={500}
-                    maxInputToolbarHeight={500}
+                    showAvatarForEveryMessage
+                    renderAvatarOnTop={true}
+                    alwaysShowSend={true}
+                    bottomOffset={44}
                     renderInputToolbar={() => this.renderInput()}
                 />
             </SafeAreaView>

@@ -10,6 +10,7 @@ export default StyleSheet.create({
         borderTopWidth: 1,
         borderTopColor: COLOR_BORDER,
         backgroundColor: COLOR_WHITE,
+        maxHeight: 44
     },
     input: {
         flexGrow: 1,
