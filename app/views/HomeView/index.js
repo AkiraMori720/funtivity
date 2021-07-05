@@ -206,7 +206,7 @@ class HomeView extends React.Component {
         console.log('notification', notification);
         firebaseSdk.setData(firebaseSdk.TBL_MEET_UP, DB_ACTION_UPDATE, {id: reviewMeetup.id, interestedUsers})
             .then(() => {
-                this.setState({showModal: false, notifying: false});
+                this.setState({showModal: false, reviewMeetup: null, notifying: false});
                 firebaseSdk.registerNotification(notification, reviewMeetup.owner?.token).then(() => {}).catch((err) => {console.log('err', err)});
             }).catch((err) => {
                 showErrorAlert('Failed.');
@@ -233,7 +233,7 @@ class HomeView extends React.Component {
         console.log('notification', notification);
         firebaseSdk.setData(firebaseSdk.TBL_MEET_UP, DB_ACTION_UPDATE, {id: reviewMeetup.id, joinUsers})
             .then((res) => {
-                this.setState({showModal: false, notifying: false});
+                this.setState({showModal: false, reviewMeetup: null, notifying: false});
                 firebaseSdk.registerNotification(notification, reviewMeetup.owner?.token).then(() => {}).catch(() => {});
             }).catch((err) => {
                 showErrorAlert('Failed.');

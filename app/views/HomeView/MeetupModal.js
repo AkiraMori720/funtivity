@@ -54,8 +54,8 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
     const [meetupName, setMeetupName] = useState(isEdit?meetup.meetupName:'');
     const [category, setCategory] = useState(isEdit?meetup.category:null);
     const [location, setLocation] = useState(isEdit?meetup.location:'');
-    const [date, setDate] = useState(isEdit?moment(meetup.date.seconds * 1000).format(DATE_STRING_FORMAT):null);
-    const [time, setTime] = useState(isEdit?moment(meetup.date.seconds * 1000).format(TIME_STRING_FORMAT):null);
+    const [date, setDate] = useState(isEdit?moment(meetup.date.seconds * 1000).format(DATE_STRING_FORMAT):moment().format(DATE_STRING_FORMAT));
+    const [time, setTime] = useState(isEdit?moment(meetup.date.seconds * 1000).format(TIME_STRING_FORMAT):moment().format(TIME_STRING_FORMAT));
     const [numberOfGuests, setNumberOfGuests] = useState(isEdit?String(meetup.guests):null);
     const [description, setDescription] = useState(isEdit?meetup.description:'');
     const [sex, setSex] = useState(isEdit?meetup.sex:null);
@@ -262,7 +262,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
                         style={{flex: 1}}
                         placeholder={'MM/dd/YY'}
                         type={'date'}
-                        value={isEdit?new Date(meetup.date.seconds * 1000):null}
+                        value={isEdit?new Date(meetup.date.seconds * 1000):new Date()}
                         action={({value}) => {
                             if(!value){
                                 return;
@@ -275,7 +275,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
                         style={{flex: 1}}
                         placeholder={'HH:MM AM'}
                         type={'time'}
-                        value={isEdit?new Date(meetup.date.seconds * 1000):null}
+                        value={isEdit?new Date(meetup.date.seconds * 1000):new Date()}
                         action={({value}) => {
                             if(!value){
                                 return;
