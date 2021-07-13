@@ -7,7 +7,7 @@ import SafeAreaView from "../../containers/SafeAreaView";
 import {withTheme} from "../../theme";
 import * as HeaderButton from "../../containers/HeaderButton";
 import styles from "./styles";
-import {Image, Modal, Text, TouchableOpacity, View} from "react-native";
+import {Image, Modal, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {DATE_TIME_STRING_FORMAT, dateToString} from "../../utils/datetime";
 import images from "../../assets/images";
 import MeetupModal from "../HomeView/MeetupModal";
@@ -21,6 +21,8 @@ import firebaseSdk, {
     STATE_PENDING
 } from "../../lib/firebaseSdk";
 import firestore from "@react-native-firebase/firestore";
+import scrollPersistTaps from "../../utils/scrollPersistTaps";
+import {Rating} from "../../containers/Rating";
 
 class MyMeetupView extends React.Component{
     static propTypes = {
@@ -34,6 +36,7 @@ class MyMeetupView extends React.Component{
         this.state = {
             meetup: meetup,
             showModal: false,
+            reviews: [],
             interestedUsers: [],
             joinUsers: []
         }
@@ -46,12 +49,25 @@ class MyMeetupView extends React.Component{
         const meetupDoc = await firestore().collection(firebaseSdk.TBL_MEET_UP).doc(meetup.id).get();
         const meetupInfo = {id: meetup.id, ...meetupDoc.data()};
 
+        const reviewSnaps = await firestore().collection(firebaseSdk.TBL_REVIEW).get();
+
         const userSnaps = await firestore().collection(firebaseSdk.TBL_USER).get();
         const users = {};
         userSnaps.forEach(s => users[s.data().userId] = s.data());
 
+        let reviews = [];
         let interestedUsers = [];
         let joinUsers = [];
+
+        reviewSnaps.forEach(doc => {
+            const review = doc.data();
+            if (review.meetupId === meetup.id) {
+                const account = users[review.userId]??{};
+
+                reviews.push({id: doc.id, ...review, account});
+            }
+        });
+        reviews.sort((a, b) => b.date.seconds - a.date.seconds);
         meetupInfo.interestedUsers.forEach(i => {
             if (users[i]){
                 interestedUsers.push(users[i]);
@@ -65,7 +81,7 @@ class MyMeetupView extends React.Component{
         });
 
         console.log('interested and joined', interestedUsers, joinUsers);
-        this.setState({meetup: meetupInfo, interestedUsers, joinUsers});
+        this.setState({meetup: meetupInfo, reviews, interestedUsers, joinUsers});
     }
 
     setHeader = () => {
@@ -117,11 +133,11 @@ class MyMeetupView extends React.Component{
 
     render(){
         const {user, theme} = this.props;
-        const {showModal, meetup, joinUsers, interestedUsers} = this.state;
+        const {showModal, meetup, joinUsers, interestedUsers, reviews} = this.state;
         return (
             <SafeAreaView style={{ backgroundColor: themes[theme].backgroundColor }}>
                 <StatusBar/>
-                <View style={styles.container}>
+                <ScrollView {...scrollPersistTaps} style={styles.container}>
                     <View style={styles.detail}>
                         <View style={styles.header}>
                             <Text style={[styles.titleText, {color: themes[theme].titleText}]}>{meetup.meetupName}</Text>
@@ -187,8 +203,35 @@ class MyMeetupView extends React.Component{
                                 }
                             </View>
                         </View>
+                        <View style={styles.review}>
+                            <View style={[styles.headerBar,{backgroundColor: themes[theme].headerBackground}]}><Text style={styles.headerTitle}>RATINGS AND REVIEWS</Text></View>
+                            <View style={styles.extensionContent}>
+                                {
+                                    reviews.map((item, index) => (
+                                        <View key={index} style={styles.itemContainer}>
+                                            <View style={styles.itemContent}>
+                                                <Image source={(item.account?.avatar) ? {uri: item.account?.avatar} : images.default_avatar}
+                                                       style={styles.itemAccountImage}/>
+                                                <View style={styles.itemHeader}>
+                                                    <Text style={styles.itemTitle}>{item.account?.firstName} {item.account?.lastName}</Text>
+                                                    <View style={styles.rateContainer}>
+                                                        <Text style={styles.rating}>{(item.rating).toFixed(1)}</Text>
+                                                        <Rating value={item.rating} size={16} changeable={false}/>
+                                                    </View>
+                                                    <Text style={[styles.itemMessage, {color: themes[theme].infoText}]}>{item.message}</Text>
+                                                </View>
+                                            </View>
+                                            {(item.photo && item.photo.length > 0) ?
+                                                <View style={styles.itemImageContainer}>
+                                                    <Image source={{uri: item.photo}} style={styles.itemImage}/>
+                                                </View> : null}
+                                        </View>
+                                    ))
+                                }
+                            </View>
+                        </View>
                     </View>
-                </View>
+                </ScrollView>
                 <Modal
                     animationType="slide"
                     transparent={true}

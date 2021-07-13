@@ -5,7 +5,6 @@ import {FlatList, RefreshControl} from "react-native";
 import firestore from "@react-native-firebase/firestore";
 
 import {themes} from "../../constants/colors";
-import sharedStyles from "../Styles";
 import StatusBar from "../../containers/StatusBar";
 import SafeAreaView from "../../containers/SafeAreaView";
 import {withTheme} from "../../theme";
@@ -13,9 +12,7 @@ import SearchBox from "../../containers/SearchBox";
 import MeetUp from "../HomeView/MeetUp";
 import NoMeetUp from "../HomeView/NoMeetUp";
 import debounce from "../../utils/debounce";
-import styles from "./styles";
 import ActivityIndicator from "../../containers/ActivityIndicator";
-import {showToast} from "../../lib/info";
 import firebaseSdk, {STATE_ACCEPTED} from "../../lib/firebaseSdk";
 
 class JoinedMeetupView extends React.Component {

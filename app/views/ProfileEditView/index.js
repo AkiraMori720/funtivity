@@ -18,6 +18,7 @@ import SafeAreaView from "../../containers/SafeAreaView";
 import {showErrorAlert, showToast} from "../../lib/info";
 import firebaseSdk, {DB_ACTION_UPDATE} from "../../lib/firebaseSdk";
 import {setUser as setUserAction} from "../../actions/login";
+import {checkCameraPermission, checkPhotosPermission} from "../../utils/permissions";
 
 const imagePickerConfig = {
     cropping: true,
@@ -50,22 +51,26 @@ class ProfileEditView extends React.Component{
             last_name: props.user.lastName,
             interests: props.user.interests??'',
             location: props.user.address??'',
-            age: props.user.age,
+            age: props.user.age.toString(),
             bio: props.user.bio??'',
             isLoading: false,
         }
     }
 
-    takePhoto = () => {
-        ImagePicker.openCamera(imagePickerConfig).then(image => {
-            this.setState({image_path: image.path});
-        });
+    takePhoto = async () => {
+        if(await checkCameraPermission()){
+            ImagePicker.openCamera(imagePickerConfig).then(image => {
+                this.setState({image_path: image.path});
+            });
+        }
     }
 
-    chooseFromLibrary = () => {
-        ImagePicker.openPicker(imagePickerConfig).then(image => {
-            this.setState({image_path: image.path});
-        });
+    chooseFromLibrary = async () => {
+        if(await checkPhotosPermission()) {
+            ImagePicker.openPicker(imagePickerConfig).then(image => {
+                this.setState({image_path: image.path});
+            });
+        }
     }
 
     toggleAction = () => {

@@ -78,7 +78,7 @@ export default class RCTextInput extends React.PureComponent {
 
 	static defaultProps = {
 		error: {},
-		theme: 'light'
+		theme: 'theme_a'
 	}
 
 	state = {
@@ -160,7 +160,8 @@ export default class RCTextInput extends React.PureComponent {
 						accessibilityLabel={placeholder}
 						placeholder={placeholder}
 						contentDescription={placeholder}
-						theme={theme}
+						placeholderTextColor={themes[theme].auxiliaryText}
+						theme={'light'}
 						{...inputProps}
 					/>
 					{iconLeft ? this.iconLeft : null}

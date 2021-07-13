@@ -81,7 +81,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
     const kindOptions = KIND_ARRAY.map((k,index) => ({value: index, text: k}));
 
     const isValid = () => {
-        if(!meetupName.length){
+        if(!meetupName.trim().length){
             showErrorAlert('Please enter meetup name.', 'Error', () => {
                 meetupNameInput.current.focus();
             });
@@ -91,7 +91,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
             showErrorAlert('Please enter activity category.', 'Error');
             return false;
         }
-        if(!location.length){
+        if(!location.trim().length){
             showErrorAlert('Please enter your location.', 'Error', () => {
                 locationInput.current.focus();
             });
@@ -119,7 +119,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
             showErrorAlert('Please choose sex.', 'Error');
             return false;
         }
-        if(!description.length){
+        if(!description.trim().length){
             showErrorAlert('Please enter description.', 'Error', () => {
                 descriptionInput.current.focus();
             });
@@ -333,7 +333,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
                     }}
                     theme={theme}
                 />
-                <UploadPhotos value={photos} onChangePhotos={(ps) => setPhotos(ps)} theme={theme}/>
+                <UploadPhotos value={photos} onChangePhotos={(ps) => setPhotos(ps)} maxCount={3} theme={theme}/>
                 <TouchableOpacity style={styles.btnContainer} onPress={onCreate}>
                     {registering?<ActivityIndicator color={themes[theme].buttonText}/>:<Text style={styles.btnText}>{isEdit?'SAVE':'Create'}</Text>}
                 </TouchableOpacity>

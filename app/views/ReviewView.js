@@ -13,6 +13,7 @@ import scrollPersistTaps from "../utils/scrollPersistTaps";
 import {Rating} from "../containers/Rating";
 import ImagePicker from "react-native-image-crop-picker";
 import firebaseSdk, {DB_ACTION_ADD} from "../lib/firebaseSdk";
+import {checkCameraPermission, checkPhotosPermission} from "../utils/permissions";
 
 const styles = StyleSheet.create({
     container: {
@@ -101,16 +102,20 @@ class ReviewView extends React.Component{
             ]);
     }
 
-    takePhoto = () => {
-        ImagePicker.openCamera(imagePickerConfig).then(image => {
-            this.setState({image_path: image.path});
-        });
+    takePhoto = async () => {
+        if(await checkCameraPermission()) {
+            ImagePicker.openCamera(imagePickerConfig).then(image => {
+                this.setState({image_path: image.path});
+            });
+        }
     }
 
-    chooseFromLibrary = () => {
-        ImagePicker.openPicker(imagePickerConfig).then(image => {
-            this.setState({image_path: image.path});
-        });
+    chooseFromLibrary = async () => {
+        if(await checkPhotosPermission()) {
+            ImagePicker.openPicker(imagePickerConfig).then(image => {
+                this.setState({image_path: image.path});
+            });
+        }
     }
 
     isValid = () => {

@@ -21,6 +21,7 @@ import {showErrorAlert, showToast} from "../../lib/info";
 import firebaseSdk from "../../lib/firebaseSdk";
 import AsyncStorage from "@react-native-community/async-storage";
 import {CURRENT_USER} from "../../constants/keys";
+import {checkCameraPermission, checkPhotosPermission} from "../../utils/permissions";
 
 const imagePickerConfig = {
     cropping: true,
@@ -56,16 +57,20 @@ class SingUpView extends React.Component{
         }
     }
 
-    takePhoto = () => {
-        ImagePicker.openCamera(imagePickerConfig).then(image => {
-            this.setState({image_path: image.path});
-        });
+    takePhoto = async () => {
+        if(await checkCameraPermission()) {
+            ImagePicker.openCamera(imagePickerConfig).then(image => {
+                this.setState({image_path: image.path});
+            });
+        }
     }
 
-    chooseFromLibrary = () => {
-        ImagePicker.openPicker(imagePickerConfig).then(image => {
-            this.setState({image_path: image.path});
-        });
+    chooseFromLibrary = async () => {
+        if(await checkPhotosPermission()) {
+            ImagePicker.openPicker(imagePickerConfig).then(image => {
+                this.setState({image_path: image.path});
+            });
+        }
     }
 
     toggleAction = () => {

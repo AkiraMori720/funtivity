@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
-import {COLOR_WHITE} from "../../constants/colors";
+import {COLOR_BLACK, COLOR_WHITE} from "../../constants/colors";
 
 export default StyleSheet.create({
     container: {
-        paddingVertical: 20,
+        marginVertical: 20,
     },
     detail: {
         paddingHorizontal: 16
@@ -66,6 +66,9 @@ export default StyleSheet.create({
     interested: {
 
     },
+    review: {
+
+    },
     headerBar: {
         padding: 12
     },
@@ -99,5 +102,42 @@ export default StyleSheet.create({
     action: {
         width: 32,
         height: 32
+    },
+    itemContainer: {
+        flexDirection: 'column',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+    },
+    itemContent: {
+        flexDirection: 'row'
+    },
+    itemAccountImage: {
+        width: 48,
+        height: 48,
+        borderRadius: 24
+    },
+    itemHeader: {
+        marginLeft: 8,
+        flexDirection: 'column'
+    },
+    itemImageContainer: {
+        marginTop: 4,
+        width: '100%',
+    },
+    itemImage: {
+        width: '100%',
+        height: 200
+    },
+    itemTitle: {
+        color: COLOR_BLACK
+    },
+    itemMessage: {
+        fontSize: 12,
+    },
+    rateContainer: {
+        flexDirection: 'row'
+    },
+    rating: {
+        marginRight: 12,
     }
 });

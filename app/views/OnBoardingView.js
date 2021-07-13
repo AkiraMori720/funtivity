@@ -25,9 +25,9 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20
+        marginVertical: 20
     },
     slides: {
         flex: 1,
@@ -63,6 +63,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     skipText: {
+        paddingHorizontal: 60,
+        fontWeight: 'bold',
         color: COLOR_ORANGE
     }
 });
@@ -147,7 +149,7 @@ class OnBoardingView extends React.Component {
                                 title={'Don`t show again'}
                                 checked={notShowAgain}
                                 onPress={() => this.setState({notShowAgain: !notShowAgain})}
-                                containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
+                                containerStyle={{ backgroundColor: 'transparent', borderWidth: 0, marginRight: 40 }}
                             />
                     }
                     <Button

@@ -4,6 +4,7 @@ import {VectorIcon} from "./VectorIcon";
 import ImagePicker from "react-native-image-crop-picker";
 import {themes} from "../constants/colors";
 import images from "../assets/images";
+import {checkCameraPermission, checkPhotosPermission} from "../utils/permissions";
 
 const imagePickerConfig = {
     cropping: true,
@@ -58,25 +59,32 @@ const styles = StyleSheet.create({
     }
 });
 
-const UploadPhotos = React.memo(({ value, onChangePhotos, theme }) => {
+const UploadPhotos = React.memo(({ value, onChangePhotos, maxCount, theme }) => {
     const [photos, setPhotos] = useState(value);
-    const takePhoto = () => {
-        ImagePicker.openCamera(imagePickerConfig).then(image => {
-            let updatePhotos = [...photos, image.path];
-            setPhotos(updatePhotos);
-            onChangePhotos(updatePhotos);
-        });
+    const takePhoto = async () => {
+        if(await checkCameraPermission()){
+            ImagePicker.openCamera(imagePickerConfig).then(image => {
+                let updatePhotos = [...photos, image.path];
+                setPhotos(updatePhotos);
+                onChangePhotos(updatePhotos);
+            });
+        }
     }
 
-    const chooseFromLibrary = () => {
-        ImagePicker.openPicker(imagePickerConfig).then(image => {
-            let updatePhotos = [...photos, image.path];
-            setPhotos(updatePhotos);
-            onChangePhotos(updatePhotos);
-        });
+    const chooseFromLibrary = async () => {
+        if(await checkPhotosPermission()){
+            ImagePicker.openPicker(imagePickerConfig).then(image => {
+                let updatePhotos = [...photos, image.path];
+                setPhotos(updatePhotos);
+                onChangePhotos(updatePhotos);
+            });
+        }
     }
 
     const onPress = () => {
+        if(photos.length >= maxCount){
+            return;
+        }
         Alert.alert(
             '',
             'Upload Photo',

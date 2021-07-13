@@ -15,6 +15,7 @@ import firebaseSdk, {DB_ACTION_UPDATE} from "../../lib/firebaseSdk";
 import {showErrorAlert, showToast} from "../../lib/info";
 import {setUser as setUserAction} from "../../actions/login";
 import ActivityIndicator from "../../containers/ActivityIndicator";
+import {checkCameraPermission, checkPhotosPermission} from "../../utils/permissions";
 
 const imagePickerConfig = {
     cropping: true,
@@ -49,16 +50,20 @@ class ProfileView extends React.Component{
         ]
     }
 
-    takePhoto = () => {
-        ImagePicker.openCamera(imagePickerConfig).then(image => {
-            this.setUserAvatar(image.path);
-        });
+    takePhoto = async () => {
+        if(await checkCameraPermission()) {
+            ImagePicker.openCamera(imagePickerConfig).then(image => {
+                this.setUserAvatar(image.path);
+            });
+        }
     }
 
-    chooseFromLibrary = () => {
-        ImagePicker.openPicker(imagePickerConfig).then(image => {
-            this.setUserAvatar(image.path);
-        });
+    chooseFromLibrary = async () => {
+        if(await checkPhotosPermission()) {
+            ImagePicker.openPicker(imagePickerConfig).then(image => {
+                this.setUserAvatar(image.path);
+            });
+        }
     }
 
     setUserAvatar = (image_path) => {
@@ -166,8 +171,8 @@ class ProfileView extends React.Component{
                                 </TouchableOpacity>);
                             }
                             return (<TouchableOpacity onPress={() => this.onClickOption(o)} style={[styles.optionContainer, {backgroundColor: themes[theme].auxiliaryTintColor, borderBottomColor: 'white'}]}>
-                                <Text style={styles.optionViewTitle}>{o.title}</Text>
-                                <VectorIcon type={'Ionicons'} name={'md-chevron-forward'} size={20} color={'white'}/>
+                                <Text style={[styles.optionViewTitle, {color: themes[theme].ownMsgText}]}>{o.title}</Text>
+                                <VectorIcon type={'Ionicons'} name={'md-chevron-forward'} size={20} color={themes[theme].ownMsgText}/>
                             </TouchableOpacity>);
                         })
                     }
