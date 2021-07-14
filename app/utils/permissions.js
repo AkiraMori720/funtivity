@@ -1,17 +1,18 @@
-import {Alert} from "react-native";
-
-const {Platform} = require("react-native");
-import {check, openSettings, PERMISSIONS, RESULTS} from "react-native-permissions";
+import {Alert, Platform} from "react-native";
+import {request, openSettings, PERMISSIONS, RESULTS} from "react-native-permissions";
 
 const fetchCameraPermission = () => {
     return new Promise((resolve, reject) => {
-        check(Platform.OS === 'ios'?PERMISSIONS.IOS.CAMERA:PERMISSIONS.ANDROID.CAMERA)
+        request(Platform.select({
+            ios: PERMISSIONS.IOS.CAMERA,
+            android: PERMISSIONS.ANDROID.CAMERA
+        }))
             .then((result) => {
+                console.log('permission', result);
                 if (result === RESULTS.GRANTED) resolve(true);
                 else resolve(false);
             })
             .catch((error) => {
-                console.log('error', error);
                 resolve(false);
             })
     })
@@ -19,7 +20,10 @@ const fetchCameraPermission = () => {
 
 const fetchPhotosPermission = () => {
     return new Promise((resolve, reject) => {
-        check(Platform.OS === 'ios'?PERMISSIONS.IOS.PHOTO_LIBRARY:PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE)
+        request(Platform.select({
+            ios: PERMISSIONS.IOS.PHOTO_LIBRARY,
+            android: PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+        }))
             .then((result) => {
                 if (result === RESULTS.GRANTED) resolve(true);
                 else resolve(false);

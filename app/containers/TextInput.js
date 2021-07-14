@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import sharedStyles from '../views/Styles';
 import { COLOR_DANGER, COLOR_TEXT, themes } from '../constants/colors';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {isIOS} from "../utils/deviceInfo";
 
 const styles = StyleSheet.create({
 	error: {
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
 		...sharedStyles.textRegular,
 		height: 40,
 		fontSize: 16,
-		paddingHorizontal: 14,
+		paddingHorizontal: isIOS?8:14,
 		borderWidth: 1,
 		borderRadius: 4
 	},

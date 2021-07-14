@@ -11,7 +11,7 @@ import {VectorIcon} from "./VectorIcon";
 
 const styles = StyleSheet.create({
 	iosPadding: {
-		height: 48,
+		height: 40,
 		justifyContent: 'center',
 	},
 	viewContainer: {
