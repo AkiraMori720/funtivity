@@ -1,6 +1,9 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
+    list: {
+        marginBottom: 30
+    },
     itemContainer: {
         flex: 1,
         flexDirection: 'row',
@@ -29,5 +32,14 @@ export default StyleSheet.create({
     itemTime: {
         marginTop: 2,
         fontSize: 10
+    },
+    emptyContainer: {
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    emptyText:{
+        fontSize: 20,
+        fontWeight: 'bold'
     }
 });

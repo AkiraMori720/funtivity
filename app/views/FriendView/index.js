@@ -31,6 +31,7 @@ class FriendView extends React.Component {
                 {id: 1, name: 'Michelle'},
                 {id: 2, name: 'Michelle'}
             ],
+            searchData: [],
             refreshing: false,
             loading: true,
         }
@@ -128,19 +129,25 @@ class FriendView extends React.Component {
                         testID='federation-view-search'
                         placeholder={'Search'}
                     />
-                    <FlatList
-                        data={searchData}
-                        renderItem={this.renderItem}
-                        keyExtractor={item => item.userId}
-                        ListFooterComponent={this.renderFooter}
-                        refreshControl={(
-                            <RefreshControl
-                                refreshing={refreshing}
-                                onRefresh={this.onRefresh}
-                                tintColor={themes[theme].actionColor}
-                            />
-                        )}
-                    />
+                    {searchData.length > 0 ?
+                        <FlatList
+                            data={searchData}
+                            renderItem={this.renderItem}
+                            keyExtractor={item => item.userId}
+                            ListFooterComponent={this.renderFooter}
+                            refreshControl={(
+                                <RefreshControl
+                                    refreshing={refreshing}
+                                    onRefresh={this.onRefresh}
+                                    tintColor={themes[theme].actionColor}
+                                />
+                            )}
+                        />
+                        :
+                        <View style={styles.emptyContainer}>
+                            <Text style={styles.emptyText}>No Friends</Text>
+                        </View>
+                    }
                 </View>
             </SafeAreaView>
         )

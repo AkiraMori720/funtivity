@@ -98,9 +98,9 @@ const ReviewMeetup = ({ meetup, onPressInterested, onPressJoin, onPressCancel, o
                 <Text style={{color: themes[theme].infoText}}>{meetup.description}</Text>
             </View>
             <TouchableOpacity onPress={onPressOwner} style={styles.ownerContainer}>
-                <Image source={meetup.owner.avatar?{uri: meetup.owner.avatar}:images.default_avatar} style={styles.avatar}/>
+                <Image source={(meetup.owner && meetup.owner.avatar)?{uri: meetup.owner.avatar}:images.default_avatar} style={styles.avatar}/>
                 <View style={styles.ownerContent}>
-                    <Text style={[styles.ownerName, {color: themes[theme].actionColor}]}>{meetup.owner.firstName} {meetup.owner.lastName}</Text>
+                    <Text style={[styles.ownerName, {color: themes[theme].actionColor}]}>{meetup.owner?.firstName??''} {meetup.owner?.lastName??''}</Text>
                     <Text style={[styles.ownerCaption, {color: themes[theme].infoText}]}>Meetup Creator</Text>
                 </View>
             </TouchableOpacity>

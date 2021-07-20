@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {FlatList, Image, Modal, RefreshControl, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, Image, Keyboard, Modal, RefreshControl, Text, TouchableOpacity, View} from "react-native";
 import firestore from "@react-native-firebase/firestore";
 
 import {COLOR_GRAY, COLOR_WHITE, themes} from "../../constants/colors";
@@ -106,6 +106,7 @@ class HomeView extends React.Component {
     }
 
     onChangeTab = (tab) => {
+        Keyboard.dismiss();
         this.setState({curTab: tab, text: ''});
         this.search();
     }

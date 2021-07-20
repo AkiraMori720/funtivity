@@ -179,8 +179,11 @@ const firebaseSdk = {
                     activities: [],
                     outdoor: [],
                 }
-                userInfo = await firestore().collection(this.TBL_USER).add(userInfo);
-                return userInfo.data();
+                const userDoc = await firestore().collection(this.TBL_USER).add(userInfo);
+                resolve({
+                    id: userDoc.id,
+                    ...userInfo
+                });
             }
         });
     },

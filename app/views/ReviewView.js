@@ -14,6 +14,8 @@ import {Rating} from "../containers/Rating";
 import ImagePicker from "react-native-image-crop-picker";
 import firebaseSdk, {DB_ACTION_ADD} from "../lib/firebaseSdk";
 import {checkCameraPermission, checkPhotosPermission} from "../utils/permissions";
+import KeyboardView from "../containers/KeyboardView";
+import sharedStyles from "./Styles";
 
 const styles = StyleSheet.create({
     container: {
@@ -42,18 +44,14 @@ const styles = StyleSheet.create({
         marginTop: 12
     },
     photo: {
-        width: '100%',
+        resizeMode: 'contain',
         height: 200
     }
 })
 
 const imagePickerConfig = {
-    cropping: true,
-    compressImageQuality: 0.8,
-    enableRotationGesture: true,
-    avoidEmptySpaceAroundImage: false,
-    cropperChooseText: 'Choose',
-    cropperCancelText: 'Cancel',
+    cropping: false,
+    compressImageQuality: 1.0,
     mediaType: 'photo',
     includeBase64: true
 };
@@ -176,39 +174,44 @@ class ReviewView extends React.Component{
         const {theme} = this.props;
         const {image_path, isSaving, rating} = this.state;
         return (
-            <SafeAreaView style={{ backgroundColor: themes[theme].backgroundColor }}>
+            <KeyboardView
+                contentContainerStyle={[sharedStyles.containera, {backgroundColor: themes[theme].backgroundColor}]}
+                keyboardVerticalOffset={128}
+            >
                 <StatusBar/>
                 <ScrollView {...scrollPersistTaps} style={styles.container}>
-                    <View style={styles.rateContainer}>
-                        <Text style={[styles.rateCaption, {color: themes[theme].controlText}]}>Tap a star to rate</Text>
-                        <Rating
-                            value={rating}
-                            onChangeRating={(value) => this.setState({rating: value})}
+                    <SafeAreaView style={{backgroundColor: themes[theme].backgroundColor}}>
+                        <View style={styles.rateContainer}>
+                            <Text style={[styles.rateCaption, {color: themes[theme].controlText}]}>Tap a star to rate</Text>
+                            <Rating
+                                value={rating}
+                                onChangeRating={(value) => this.setState({rating: value})}
+                            />
+                        </View>
+                        <Text style={[styles.reviewCaption, {color: themes[theme].actionColor}]}>Write a review</Text>
+                        <TextInput
+                            inputRef={e => this.reviewTextInput = e}
+                            placeholder={'Please enter text...'}
+                            returnKeyType='send'
+                            keyboardType='twitter'
+                            textContentType='oneTimeCode'
+                            inputStyle={{height: 120, fontSize: 14, textAlignVertical: 'top'}}
+                            multiline={true}
+                            onChangeText={value => this.setState({reviewText: value.trim()})}
+                            theme={theme}
                         />
-                    </View>
-                    <Text style={[styles.reviewCaption, {color: themes[theme].actionColor}]}>Write a review</Text>
-                    <TextInput
-                        inputRef={e => this.reviewTextInput = e}
-                        placeholder={'Please enter text...'}
-                        returnKeyType='submit'
-                        keyboardType='twitter'
-                        textContentType='oneTimeCode'
-                        inputStyle={{height: 120, fontSize: 14, textAlignVertical: 'top'}}
-                        multiline={true}
-                        onChangeText={value => this.setState({reviewText: value.trim()})}
-                        theme={theme}
-                    />
-                    <View style={styles.photoContainer}>
-                        <Image source={{uri: image_path}} style={styles.photo}/>
-                        <TouchableOpacity style={[styles.btnContainer, {borderStyle: "dashed", borderWidth: 1}]} onPress={this.onPickerPhoto}>
-                           <Text style={[styles.btnText, {color: COLOR_BLACK}]}>Tap to Upload Photo</Text>
+                        <View style={styles.photoContainer}>
+                            <Image source={{uri: image_path}} style={styles.photo} resizeMethod={"scale"}/>
+                            <TouchableOpacity style={[styles.btnContainer, {borderStyle: "dashed", borderWidth: 1}]} onPress={this.onPickerPhoto}>
+                               <Text style={[styles.btnText, {color: COLOR_BLACK}]}>Tap to Upload Photo</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={[styles.btnContainer, {backgroundColor: COLOR_BLUE}]} onPress={this.onSave}>
+                            {isSaving ? <ActivityIndicator color={themes[theme].actionColor} /> : <Text style={[styles.btnText, {color: COLOR_WHITE}]}>Save</Text>}
                         </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity style={[styles.btnContainer, {backgroundColor: COLOR_BLUE}]} onPress={this.onSave}>
-                        {isSaving ? <ActivityIndicator color={themes[theme].actionColor} /> : <Text style={[styles.btnText, {color: COLOR_WHITE}]}>Save</Text>}
-                    </TouchableOpacity>
+                    </SafeAreaView>
                 </ScrollView>
-            </SafeAreaView>
+            </KeyboardView>
         )
     }
 }

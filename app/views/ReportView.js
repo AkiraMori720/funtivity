@@ -93,7 +93,7 @@ class ReportView extends React.Component{
                     <TextInput
                         inputRef={e => this.reportTextInput = e}
                         placeholder={'Please enter text...'}
-                        returnKeyType='submit'
+                        returnKeyType='send'
                         keyboardType='twitter'
                         textContentType='oneTimeCode'
                         inputStyle={{height: 120, fontSize: 14, textAlignVertical: 'top'}}

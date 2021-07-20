@@ -16,10 +16,12 @@ import images from "../../assets/images";
 import firebaseSdk from "../../lib/firebaseSdk";
 import {showErrorAlert} from "../../lib/info";
 import {isIOS} from "../../utils/deviceInfo";
+import {withSafeAreaInsets} from "react-native-safe-area-context";
 
 class ChatView extends React.Component {
     static propTypes = {
         user: PropTypes.object,
+        insets: PropTypes.object,
         theme: PropTypes.string,
     }
 
@@ -146,7 +148,7 @@ class ChatView extends React.Component {
     }
 
     render() {
-        const {user, theme} = this.props;
+        const {user, theme, insets} = this.props;
         const {messages} = this.state;
         return (
             <SafeAreaView style={{backgroundColor: themes[theme].backgroundColor}}>
@@ -161,7 +163,7 @@ class ChatView extends React.Component {
                     showAvatarForEveryMessage
                     renderAvatarOnTop={true}
                     alwaysShowSend={true}
-                    bottomOffset={isIOS?44:0}
+                    bottomOffset={isIOS?(11 + insets.bottom):0}
                     renderInputToolbar={() => this.renderInput()}
                 />
             </SafeAreaView>
@@ -173,4 +175,4 @@ const mapStateToProps = state => ({
     user: state.login.user
 })
 
-export default connect(mapStateToProps, null)(withTheme(ChatView));
+export default connect(mapStateToProps, null)(withSafeAreaInsets(withTheme(ChatView)));

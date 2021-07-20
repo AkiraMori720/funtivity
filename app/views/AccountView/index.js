@@ -147,7 +147,7 @@ class AccountView extends React.Component {
                     <Image source={account.avatar ? {uri: account.avatar} : images.default_avatar}
                            style={styles.accountImage}/>
                     <Text style={styles.accountEmail}>{account.email??'Email'}</Text>
-                    <Text style={styles.accountName}>{account.firstName?(account.firstName +  account.lastName):'Name'}</Text>
+                    <Text style={styles.accountName}>{account.firstName?(account.firstName + ' ' + account.lastName):'Name'}</Text>
                     <Text style={styles.accountAddress}>{account.address??'Full Address'}</Text>
                     <View style={styles.actionContainer}>
                         <TouchableOpacity onPress={this.toogleFriend}>

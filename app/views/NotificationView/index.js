@@ -72,9 +72,21 @@ class NotificationView extends React.Component{
         this.init();
     }
 
-    onPressItem = (item) => {
+    onPressItem = async (item) => {
         const { navigation } = this.props;
-        navigation.navigate('MyMeetup', {meetup: {id: item.meetupId}});
+        const {user} = this.props;
+        const meetupDoc = await firestore().collection(firebaseSdk.TBL_MEET_UP).doc(item.meetupId).get();
+        const meetup = {id: meetupDoc.id, ...meetupDoc.data()};
+        if(meetup.userId === user.userId){
+            navigation.navigate('MyMeetup', {meetup: {id: item.meetupId}});
+        } else {
+            const userSnaps = await firestore().collection(firebaseSdk.TBL_USER).get();
+            let account = {};
+            userSnaps.forEach(s => {
+                if (s.data().userId === meetup.userId) account = {id: s.id, ...s.data()}
+            });
+            navigation.navigate('MeetupDetail', {meetup:{...meetup, account}});
+        }
     }
 
     renderItem = ({item}) => {
@@ -95,18 +107,25 @@ class NotificationView extends React.Component{
             <SafeAreaView style={{ backgroundColor: themes[theme].backgroundColor }}>
                 <StatusBar/>
                 {loading && <ActivityIndicator absolute theme={theme} size={'large'}/>}
-                <FlatList
-                    data={data}
-                    renderItem={this.renderItem}
-                    keyExtractor={item => item.id}
-                    refreshControl={(
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={this.onRefresh}
-                            tintColor={themes[theme].actionColor}
-                        />
-                    )}
-                />
+                {data.length > 0 ?
+                    <FlatList
+                        data={data}
+                        style={styles.list}
+                        renderItem={this.renderItem}
+                        keyExtractor={item => item.id}
+                        refreshControl={(
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={this.onRefresh}
+                                tintColor={themes[theme].actionColor}
+                            />
+                        )}
+                    />
+                    :
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No Notifications</Text>
+                    </View>
+                }
             </SafeAreaView>
         )
     }
