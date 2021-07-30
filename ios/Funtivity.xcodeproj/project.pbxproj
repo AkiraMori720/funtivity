@@ -514,8 +514,8 @@
 				CODE_SIGN_ENTITLEMENTS = Funtivity/Funtivity.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEVELOPMENT_TEAM = 9LYPE5V96D;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 73NRM5JN65;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Funtivity/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -528,7 +528,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brainyapps.funtivityapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brainyapps.funtivityapps;
 				PRODUCT_NAME = Funtivity;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Funtivity-Bridging-Header.h";
@@ -547,8 +547,8 @@
 				CODE_SIGN_ENTITLEMENTS = Funtivity/Funtivity.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
-				DEVELOPMENT_TEAM = 9LYPE5V96D;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 73NRM5JN65;
 				INFOPLIST_FILE = Funtivity/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -560,7 +560,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brainyapps.funtivityapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brainyapps.funtivityapps;
 				PRODUCT_NAME = Funtivity;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Funtivity-Bridging-Header.h";
