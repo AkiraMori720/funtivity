@@ -22,6 +22,7 @@ import firebaseSdk from "../../lib/firebaseSdk";
 import AsyncStorage from "@react-native-community/async-storage";
 import {CURRENT_USER} from "../../constants/keys";
 import {checkCameraPermission, checkPhotosPermission} from "../../utils/permissions";
+import CheckBox from "../../containers/CheckBox";
 
 const imagePickerConfig = {
     cropping: true,
@@ -54,6 +55,7 @@ class SingUpView extends React.Component{
             password: '',
             password_confirm: '',
             isLoading: false,
+            allowTerms: false
         }
     }
 
@@ -144,6 +146,15 @@ class SingUpView extends React.Component{
         }
         return true;
     }
+    onGotoTerms = () => {
+        const {navigation} = this.props;
+        navigation.navigate('About', {type: 2});
+    }
+
+    onGotoPrivacy = () => {
+        const {navigation} = this.props;
+        navigation.navigate('About', {type: 1});
+    }
 
     onSubmit = () => {
         if(this.isValid()){
@@ -190,7 +201,7 @@ class SingUpView extends React.Component{
 
     render(){
         const {theme} = this.props;
-        const {image_path, isLoading} = this.state;
+        const {image_path, isLoading, allowTerms} = this.state;
         return (
             <KeyboardView
                 style={{backgroundColor: themes[theme].backgroundColor}}
@@ -271,11 +282,29 @@ class SingUpView extends React.Component{
                                 onChangeText={value => this.setState({password_confirm: value})}
                                 theme={theme}
                             />
+                            <View style={styles.terms}>
+                                <View style={styles.termItem}>
+                                    <CheckBox
+                                        checked={allowTerms}
+                                        onPress={() => this.setState({allowTerms: !allowTerms})}
+                                        containerStyle={{backgroundColor: 'transparent', borderWidth: 0, marginRight: 10}}
+                                    />
+                                    <Text style={{color: themes[theme].actionTintColor}}>I agree with the </Text>
+                                    <Text style={{...sharedStyles.link, color: themes[theme].actionTintColor}}
+                                          onPress={this.onGotoTerms}> Terms and Conditions </Text>
+                                    <Text style={{color: themes[theme].actionTintColor}}> and </Text>
+                                </View>
+                                <View style={{marginLeft: 30}}>
+                                    <Text style={{...sharedStyles.link, color: themes[theme].actionTintColor}}
+                                          onPress={this.onGotoPrivacy}> Privacy Policy </Text>
+                                </View>
+                            </View>
                             <Button
                                 style={styles.submitBtn}
                                 title={'Create Account'}
                                 type='primary'
                                 size='W'
+                                disabled={!allowTerms}
                                 onPress={this.onSubmit}
                                 testID='login-view-submit'
                                 loading={isLoading}

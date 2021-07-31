@@ -12,13 +12,19 @@ export default StyleSheet.create({
         paddingHorizontal: 18,
     },
     submitBtn: {
-        marginTop: 8,
+        marginTop: 12,
         paddingVertical: 2,
         alignSelf: 'center'
     },
     bottomContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 30
+        marginTop: 20
+    },
+    terms: {
+    },
+    termItem: {
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 });

@@ -4,7 +4,6 @@ import {StyleSheet} from "react-native";
 import { WebView } from 'react-native-webview';
 
 import {themes} from "../constants/colors";
-import sharedStyles from "./Styles";
 import StatusBar from "../containers/StatusBar";
 import SafeAreaView from "../containers/SafeAreaView";
 import {withTheme} from "../theme";

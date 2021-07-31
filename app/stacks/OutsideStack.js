@@ -9,6 +9,7 @@ import {
 import SignInView from '../views/SignInView';
 import SignUpView from '../views/SignUpView';
 import ForgotPasswordView from '../views/ForgotPasswordView';
+import AboutView from "../views/AboutView";
 
 // Outside
 const Outside = createStackNavigator();
@@ -32,7 +33,10 @@ const OutsideStack = () => {
 				component={ForgotPasswordView}
 				options={ForgotPasswordView.navigationOptions}
 			/>
-
+			<Outside.Screen
+				name='About'
+				component={AboutView}
+			/>
 		</Outside.Navigator>
 	);
 };

@@ -4,17 +4,14 @@ import {StyleSheet, View} from "react-native";
 import { WebView } from 'react-native-webview';
 
 import {themes} from "../constants/colors";
-import sharedStyles from "./Styles";
 import StatusBar from "../containers/StatusBar";
 import SafeAreaView from "../containers/SafeAreaView";
 import {withTheme} from "../theme";
-import {CONTENT_ABOUT_THE_APP, CONTENT_PRIVACY_POLICY, CONTENT_TERMS_AND_CONDITIONS} from "../constants/app";
 import TextInput from "../containers/TextInput";
 import Button from "../containers/Button";
 import {showErrorAlert, showToast} from "../lib/info";
 import {connect} from "react-redux";
 import firebaseSdk, {DB_ACTION_ADD} from "../lib/firebaseSdk";
-import ActivityIndicator from "../containers/ActivityIndicator";
 
 const styles = StyleSheet.create({
     container: {
