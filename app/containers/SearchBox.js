@@ -66,6 +66,7 @@ const SearchBox = ({
 				underlineColorAndroid='transparent'
 				onChangeText={onChangeText}
 				onSubmitEditing={onSubmitEditing}
+				placeholderTextColor={themes[theme].auxiliaryText}
 				theme={theme}
 				{...props}
 			/>

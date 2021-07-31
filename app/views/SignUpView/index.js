@@ -188,9 +188,8 @@ class SingUpView extends React.Component{
 
         firebaseSdk.signUp(user)
             .then(async (user) => {
-                showToast('You have successfully registered.');
-                await AsyncStorage.setItem(CURRENT_USER, JSON.stringify(user));
                 this.setState({isLoading: false});
+                showToast('You have successfully registered.');
                 navigation.pop();
             })
             .catch((err) => {

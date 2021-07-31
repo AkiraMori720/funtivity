@@ -113,7 +113,7 @@ class SingInView extends React.Component {
                     .then(async(credential) => {
                         console.log('facebook', credential);
                         const { user } = credential;
-                        const names = user.name.split(' ');
+                        const names = user.displayName.split(' ');
                         const credentialInfo = {
                             uid: user.uid,
                             firstName: names[0],
@@ -149,10 +149,10 @@ class SingInView extends React.Component {
                     .then(async(credential) => {
                         console.log('apple', credential);
                         const { user } = credential;
-                        const names = user.displayName.split(' ');
+                        const names = user.displayName?.split(' ')??[];
                         const credentialInfo = {
                             uid: user.uid,
-                            firstName: names[0],
+                            firstName: names[0]??'',
                             lastName: names[1]??'',
                             email: user.email,
                             avatar: user.photoURL??''

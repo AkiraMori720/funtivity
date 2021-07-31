@@ -64,7 +64,7 @@ export default class Root extends React.Component {
         this.setDimensions({
             width, height, scale, fontScale
         });
-        this.setMasterDetail(width);
+        // this.setMasterDetail(width);
     })
 
     setTheme = (newTheme = {}) => {

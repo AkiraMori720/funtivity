@@ -6,9 +6,9 @@ export const showErrorAlert = (message, title, onPress = () => {}) => Alert.aler
 
 export const showToast = (message)=>EventEmitter.emit(LISTENER, {message: message});
 
-export const showConfirmationAlert = ({ message, callToAction, onPress }) => (
+export const showConfirmationAlert = ({ title, message, callToAction, onPress }) => (
 	Alert.alert(
-		'Are you sure question mark',
+		title??'Are you sure question mark',
 		message,
 		[
 			{

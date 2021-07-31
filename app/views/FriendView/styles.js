@@ -22,5 +22,14 @@ export default StyleSheet.create({
     itemText: {
         color: 'black',
         marginLeft: 8
+    },
+    emptyContainer: {
+        flexGrow:1,
+        alignItems: 'center',
+        marginTop: 40
+    },
+    emptyText:{
+        fontSize: 20,
+        fontWeight: 'bold'
     }
 });

@@ -2,14 +2,14 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     itemContainer: {
-        flex: 1,
         flexDirection: 'row',
         paddingVertical: 12,
-        paddingHorizontal: 20,
+        marginHorizontal: 20,
     },
     itemContent: {
         justifyContent: 'flex-start',
         flexGrow: 1,
+        flex:1,
         marginLeft: 8
     },
     itemHeader: {
@@ -39,5 +39,14 @@ export default StyleSheet.create({
     },
     itemTime: {
         fontSize: 10
+    },
+    emptyContainer: {
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    emptyText:{
+        fontSize: 20,
+        fontWeight: 'bold'
     }
 });

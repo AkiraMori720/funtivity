@@ -13,7 +13,7 @@ import messaging from "@react-native-firebase/messaging";
 import {now} from "moment";
 
 const CLOUD_MESSAGING_SERVER_KEY = 'AAAAfoaJ3wk:APA91bH9EK9uwyXrFaGjxu09s-WJIkEt5l26yaQKqOaomDhKLhWvdefpDLsVg4AEaJxOd1c-76wq4aLharmvy8oG2UaEqptb64Vr3yiXsvggizwhz7ryctVPSApObfzi9KOGJHT_PUz5';
-const GOOGLE_SIGN_IN_WEBCLIENT_ID = '543423061769-d9r2rv8t2bqom533um8q1k0gvhds5010.apps.googleusercontent.com';
+const GOOGLE_SIGN_IN_WEBCLIENT_ID = '543423061769-2iu39r724lqdv70904t07b3k6re3pqnf.apps.googleusercontent.com';
 
 GoogleSignin.configure({
     webClientId: GOOGLE_SIGN_IN_WEBCLIENT_ID
@@ -179,8 +179,11 @@ const firebaseSdk = {
                     activities: [],
                     outdoor: [],
                 }
-                userInfo = await firestore().collection(this.TBL_USER).add(userInfo);
-                return userInfo.data();
+                const userDoc = await firestore().collection(this.TBL_USER).add(userInfo);
+                resolve({
+                    id: userDoc.id,
+                    ...userInfo
+                });
             }
         });
     },

@@ -125,7 +125,7 @@ export default StyleSheet.create({
         width: '100%',
     },
     itemImage: {
-        width: '100%',
+        resizeMode: 'contain',
         height: 200
     },
     itemTitle: {

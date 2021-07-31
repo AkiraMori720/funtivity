@@ -234,7 +234,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
                     inputRef={meetupNameInput}
                     placeholder={'Meetup Name'}
                     returnKeyType='next'
-                    keyboardType='twitter'
+                    keyboardType='ascii-capable'
                     textContentType='oneTimeCode'
                     value={meetupName}
                     onChangeText={value => setMeetupName(value)}
@@ -251,7 +251,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
                     inputRef={locationInput}
                     placeholder={'Location'}
                     returnKeyType='next'
-                    keyboardType='twitter'
+                    keyboardType='ascii-capable'
                     textContentType='oneTimeCode'
                     value={location}
                     onChangeText={value => setLocation(value)}

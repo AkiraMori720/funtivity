@@ -12,6 +12,7 @@ import images from "../../assets/images";
 import SidebarItem from "./SidebarItem";
 import scrollPersistTaps from "../../utils/scrollPersistTaps";
 import {logout as logoutAction} from "../../actions/login";
+import {showConfirmationAlert} from "../../lib/info";
 
 
 class SidebarView extends React.Component{
@@ -86,7 +87,12 @@ class SidebarView extends React.Component{
 
     onLogOut = () => {
         const {logout} = this.props;
-        logout();
+        showConfirmationAlert({
+            title: 'Log Out',
+            message: 'Are you sure you want to log out?',
+            callToAction: 'Confirm',
+            onPress: () => logout()
+        });
     }
 
     render(){

@@ -9,7 +9,7 @@ const fetchCameraPermission = () => {
         }))
             .then((result) => {
                 console.log('permission', result);
-                if (result === RESULTS.GRANTED) resolve(true);
+                if (result === RESULTS.GRANTED || result === RESULTS.LIMITED) resolve(true);
                 else resolve(false);
             })
             .catch((error) => {
@@ -25,7 +25,8 @@ const fetchPhotosPermission = () => {
             android: PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
         }))
             .then((result) => {
-                if (result === RESULTS.GRANTED) resolve(true);
+                console.log('permission', result);
+                if (result === RESULTS.GRANTED || result === RESULTS.LIMITED) resolve(true);
                 else resolve(false);
             })
             .catch((error) => {

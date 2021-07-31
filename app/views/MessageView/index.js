@@ -92,7 +92,7 @@ class MessageView extends React.Component {
                     <Text style={styles.itemTime}>{moment(item.date.seconds * 1000).format(DATE_TIME_STRING_FORMAT)}</Text>
                 </View>
                 <View style={styles.itemFooter}>
-                    <Text style={styles.itemMessage}>{item.lastMessage}</Text>
+                    <Text style={styles.itemMessage} ellipsizeMode='tail' numberOfLines={2}>{item.lastMessage}</Text>
                     {item.unread && <Image source={images.ic_dot} style={styles.unread}/>}
                 </View>
             </View>
@@ -106,18 +106,24 @@ class MessageView extends React.Component {
             <SafeAreaView style={{backgroundColor: themes[theme].backgroundColor}}>
                 <StatusBar/>
                 {loading && <ActivityIndicator absolute theme={theme} size={'large'}/>}
-                <FlatList
-                    data={data}
-                    renderItem={this.renderItem}
-                    keyExtractor={item => item.id}
-                    refreshControl={(
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={this.onRefresh}
-                            tintColor={themes[theme].actionColor}
-                        />
-                    )}
-                />
+                {data.length > 0 ?
+                    <FlatList
+                        data={data}
+                        renderItem={this.renderItem}
+                        keyExtractor={item => item.id}
+                        refreshControl={(
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={this.onRefresh}
+                                tintColor={themes[theme].actionColor}
+                            />
+                        )}
+                    />
+                :
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No Messages</Text>
+                    </View>
+                }
             </SafeAreaView>
         )
     }
