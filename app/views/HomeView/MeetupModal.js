@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, ScrollView, ActivityIndicator, Platform} from 'react-native';
 
 import {COLOR_BLUE, COLOR_WHITE, themes} from "../../constants/colors";
 import scrollPersistTaps from "../../utils/scrollPersistTaps";
@@ -234,7 +234,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
                     inputRef={meetupNameInput}
                     placeholder={'Meetup Name'}
                     returnKeyType='next'
-                    keyboardType='ascii-capable'
+                    keyboardType={Platform.OS === 'ios' ? 'ascii-capable' : 'visible-password'}
                     textContentType='oneTimeCode'
                     value={meetupName}
                     onChangeText={value => setMeetupName(value)}
@@ -251,7 +251,7 @@ const MeetupModal = React.memo(({ meetup, userId, onPressCancel, onSuccess, them
                     inputRef={locationInput}
                     placeholder={'Location'}
                     returnKeyType='next'
-                    keyboardType='ascii-capable'
+                    keyboardType={Platform.OS === 'ios' ? 'ascii-capable' : 'visible-password'}
                     textContentType='oneTimeCode'
                     value={location}
                     onChangeText={value => setLocation(value)}

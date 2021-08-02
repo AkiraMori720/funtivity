@@ -39,6 +39,9 @@ export default StyleSheet.create({
         flexDirection: 'row',
         marginTop: 16
     },
+    actionContainer2: {
+        marginTop: 16
+    },
     accountAction: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -54,6 +57,11 @@ export default StyleSheet.create({
     },
     actionText: {
         color: COLOR_WHITE
+    },
+    actionText2: {
+        color: COLOR_WHITE,
+        paddingLeft: 8,
+        paddingVertical: 6
     },
     option: {
         padding: 16,

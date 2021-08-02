@@ -426,6 +426,28 @@ const firebaseSdk = {
         });
     },
 
+    blockUser(myId, accountId, action){
+        return new Promise(async (resolve, reject) => {
+            const db = firebase.firestore();
+            const myRef = db.collection(firebaseSdk.TBL_USER).doc(myId);
+            const userRef = db.collection(firebaseSdk.TBL_USER).doc(accountId);
+            try {
+                const myDoc = await myRef.get();
+                const userDoc = await userRef.get();
+                let myBlocks = myDoc.data().blocks??[];
+                if(action === DB_ACTION_ADD){
+                    myBlocks = [...myBlocks, userDoc.data().userId];
+                } else {
+                    myBlocks = myBlocks.filter(f => f!== userDoc.data().userId);
+                }
+                await myRef.update({blocks: myBlocks});
+                resolve(myBlocks);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    },
+
     uploadMedia(type, path){
         const milliSeconds = new Date().getMilliseconds();
         return new Promise((resolve, reject) => {

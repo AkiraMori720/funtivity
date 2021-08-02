@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import I18n from '../i18n';
 import sharedStyles from '../views/Styles';
 import { withTheme } from '../theme';
-import {COLOR_BORDER, themes} from '../constants/colors';
+import {COLOR_BLACK, COLOR_BORDER, themes} from '../constants/colors';
 import { isIOS } from '../utils/deviceInfo';
 import {VectorIcon} from "./VectorIcon";
 
@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
 		marginLeft: 8,
 		paddingTop: 0,
 		paddingBottom: 0,
-		...sharedStyles.textRegular
+		...sharedStyles.textRegular,
+		color: COLOR_BLACK
 	},
 	cancel: {
 		padding: 4

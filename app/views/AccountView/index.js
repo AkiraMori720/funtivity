@@ -22,6 +22,7 @@ import {getActivities} from "../../utils/const";
 import ActivityIndicator from "../../containers/ActivityIndicator";
 import {setUser as setUserAction} from "../../actions/login";
 import firestore from "@react-native-firebase/firestore";
+import {VectorIcon} from "../../containers/VectorIcon";
 
 class AccountView extends React.Component {
     static propTypes = {
@@ -34,11 +35,13 @@ class AccountView extends React.Component {
         super(props);
         const userId = props.route.params?.userId;
         const isFriend = props.user.friends.includes(userId);
+        const isBlocked = props.user.blocks && props.user.blocks.includes(userId);
         this.state = {
             account: {
                 userId: userId,
             },
             isFriend,
+            isBlocked,
             loading: false,
         }
         this.setHeader();
@@ -104,6 +107,24 @@ class AccountView extends React.Component {
                 const isFriend = myFriends.includes(account.userId);
                 this.setState({account: newAccount, loading: false, isFriend});
             })
+            .catch(err => {
+                this.setState({loading: false});
+            })
+    }
+
+    toggleBlock = () => {
+        const {isBlocked, account} = this.state;
+        const {user, setUser} = this.props;
+        this.setState({loading: true});
+        firebaseSdk.blockUser(user.id, account.id, isBlocked?DB_ACTION_DELETE:DB_ACTION_ADD)
+            .then((blocks) => {
+                setUser({blocks});
+                const isBlocked = blocks.includes(account.userId);
+                this.setState({loading: false, isBlocked});
+            })
+            .catch(err => {
+                this.setState({loading: false});
+            })
     }
 
     sendMessage = async () => {
@@ -136,7 +157,7 @@ class AccountView extends React.Component {
 
     render() {
         const {theme} = this.props;
-        const {isFriend, account, loading} = this.state;
+        const {isFriend, isBlocked, account, loading} = this.state;
         return (
             <SafeAreaView style={{backgroundColor: themes[theme].focusedBackground}}>
                 <StatusBar/>
@@ -160,6 +181,14 @@ class AccountView extends React.Component {
                             <ImageBackground source={images.bg_gray_button} style={styles.accountAction} imageStyle={{borderRadius: 20}}>
                                 <Image source={images.send_message} style={styles.actionImage}/>
                                 <Text style={styles.actionText}>Send a Message</Text>
+                            </ImageBackground>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.actionContainer2}>
+                        <TouchableOpacity onPress={this.toggleBlock}>
+                            <ImageBackground source={images.bg_gray_button} style={styles.accountAction} imageStyle={{borderRadius: 20}}>
+                                <VectorIcon type={'FontAwesome5'} name={'user-times'} size={15} color={'white'}/>
+                                <Text style={styles.actionText2}>{isBlocked?'Unblock User':'Block User'}</Text>
                             </ImageBackground>
                         </TouchableOpacity>
                     </View>

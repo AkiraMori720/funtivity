@@ -63,8 +63,13 @@ class HomeView extends React.Component {
         }
         this.unsubscribeFocus = props.navigation.addListener("focus", () => {
             if (this.state.reviewMeetup) {
-                this.setState({showModal: true});
+                if(this.props.user.blocks && this.props.user.blocks.includes(this.state.reviewMeetup.userId)){
+                    this.setState({reviewMeetup: null});
+                } else {
+                    this.setState({showModal: true});
+                }
             }
+            this.init();
         });
         this.init();
     }
@@ -83,6 +88,7 @@ class HomeView extends React.Component {
     }
 
     init = async () => {
+        const {user} = this.props;
         let meetupSubscribe = await firestore().collection(firebaseSdk.TBL_MEET_UP);
         this.unSubscribeMeetup = meetupSubscribe.onSnapshot(async (querySnapShot) => {
             const userSnaps = await firestore().collection(firebaseSdk.TBL_USER).get();
@@ -91,8 +97,11 @@ class HomeView extends React.Component {
 
             let list = [];
             querySnapShot.forEach(doc => {
-                const owner = users.find(u => u.userId === doc.data().userId);
-                list.push({id: doc.id, ...doc.data(), owner});
+                const meetup = doc.data();
+                if(!user.blocks || !user.blocks.includes(meetup.userId)){
+                    const owner = users.find(u => u.userId === meetup.userId);
+                    list.push({id: doc.id, ...meetup, owner});
+                }
             });
             list.sort((a, b) => b.date - a.date);
             if (this.mounted) {
